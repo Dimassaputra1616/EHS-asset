@@ -1,0 +1,322 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Asset;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+
+class AssetController extends Controller
+{
+    public function index(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Asset::with(['category', 'location', 'supplier'])->select('assets.*');
+            if ($request->filled('category_id')) {
+                $data->where('category_id', $request->category_id);
+            }
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('category_name', function($row){
+                    return $row->category ? $row->category->name : '-';
+                })
+                ->addColumn('location_name', function($row){
+                    return $row->location ? $row->location->name : '-';
+                })
+                ->addColumn('action', function($row){
+                    $btn = '<button class="btn btn-action btn-view me-1" data-id="' . $row->id . '" title="View"><i class="bi bi-eye"></i></button>';
+                    $btn .= '<a href="' . route('assets.edit', $row->id) . '" class="btn btn-action btn-edit me-1" title="Edit"><i class="bi bi-pencil"></i></a>';
+                    $btn .= '<button class="btn btn-action btn-delete" data-id="' . $row->id . '" data-name="' . htmlspecialchars($row->name) . '" title="Delete"><i class="bi bi-trash"></i></button>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        return view('assets.index');
+    }
+
+    public function create()
+    {
+        $categories = \App\Models\Category::where('type', 'asset')->get();
+        $locations = \App\Models\Location::all();
+        $suppliers = \App\Models\Supplier::all();
+        return view('assets.create', compact('categories', 'locations', 'suppliers'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string|max:255|unique:assets,code',
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'location_id' => 'required|exists:locations,id',
+            'supplier_id' => 'required|exists:suppliers,id',
+            'condition' => 'required|string',
+            'status' => 'required|string',
+            'purchase_date' => 'nullable|date',
+            'purchase_cost' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+            'assigned_to' => 'nullable|string|max:255',
+        ]);
+
+        $asset = Asset::create($request->all());
+
+        \App\Helpers\ActivityLogger::log('Create Asset', "Asset {$asset->name} ({$asset->code}) was created.");
+
+        return redirect()->route('assets.index')->with('success', 'Asset created successfully.');
+    }
+
+    public function show(Asset $asset)
+    {
+        $asset->load(['category', 'location', 'supplier']);
+        return response()->json($asset);
+    }
+
+    public function edit(Asset $asset)
+    {
+        $categories = \App\Models\Category::where('type', 'asset')->get();
+        $locations = \App\Models\Location::all();
+        $suppliers = \App\Models\Supplier::all();
+        return view('assets.edit', compact('asset', 'categories', 'locations', 'suppliers'));
+    }
+
+    public function update(Request $request, Asset $asset)
+    {
+        $request->validate([
+            'code' => 'required|string|max:255|unique:assets,code,'.$asset->id,
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'location_id' => 'required|exists:locations,id',
+            'supplier_id' => 'required|exists:suppliers,id',
+            'condition' => 'required|string',
+            'status' => 'required|string',
+            'purchase_date' => 'nullable|date',
+            'purchase_cost' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+            'assigned_to' => 'nullable|string|max:255',
+        ]);
+
+        $asset->update($request->all());
+
+        \App\Helpers\ActivityLogger::log('Update Asset', "Asset {$asset->name} ({$asset->code}) was updated.");
+
+        return redirect()->route('assets.index')->with('success', 'Asset updated successfully.');
+    }
+
+    public function destroy(Asset $asset)
+    {
+        \App\Helpers\ActivityLogger::log('Delete Asset', "Asset {$asset->name} ({$asset->code}) was deleted.");
+        $asset->delete();
+        return redirect()->route('assets.index')->with('success', 'Asset deleted successfully.');
+    }
+
+    public function generateCode(Request $request, $categoryId)
+    {
+        $category = \App\Models\Category::findOrFail($categoryId);
+        $name = $category->name;
+        
+        // Clean prefix extraction
+        preg_match('/^([^\(]+)/', $name, $matches);
+        $cleanName = trim($matches[1] ?? $name);
+        
+        $words = explode(' ', $cleanName);
+        if (count($words) >= 2) {
+            $prefix = '';
+            foreach ($words as $w) {
+                if (!empty($w)) {
+                    $prefix .= substr($w, 0, 1);
+                }
+            }
+        } else {
+            $prefix = substr($cleanName, 0, 3);
+        }
+        $prefix = strtoupper(trim($prefix));
+        
+        // Specific overrides for accuracy
+        if (str_contains(strtolower($name), 'apar')) $prefix = 'APR';
+        if (str_contains(strtolower($name), 'handy') || str_contains(strtolower($name), 'ht')) $prefix = 'HT';
+        if (str_contains(strtolower($name), 'hydrant')) $prefix = 'HYD';
+
+        // Find next sequence
+        $lastAsset = Asset::where('code', 'like', "HSE-{$prefix}-%")
+            ->orderBy('code', 'desc')
+            ->first();
+
+        $nextSeq = 1;
+        if ($lastAsset) {
+            $parts = explode('-', $lastAsset->code);
+            $lastSeq = end($parts);
+            if (is_numeric($lastSeq)) {
+                $nextSeq = intval($lastSeq) + 1;
+            }
+        }
+        
+        $code = sprintf("HSE-%s-%03d", $prefix, $nextSeq);
+        return response()->json(['code' => $code]);
+    }
+
+    public function export(Request $request)
+    {
+        $query = Asset::with(['category', 'location', 'supplier']);
+
+        if ($request->has('category_id') && !empty($request->category_id)) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $assets = $query->get();
+
+        $filename = 'assets_export_' . date('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function() use ($assets) {
+            $file = fopen('php://output', 'w');
+            
+            // UTF-8 BOM for Excel detection
+            fputs($file, "\xEF\xBB\xBF");
+
+            // Header row
+            fputcsv($file, [
+                'No', 
+                'Asset Code', 
+                'Asset Name', 
+                'Category', 
+                'Location', 
+                'Supplier / Vendor', 
+                'Condition', 
+                'Status', 
+                'Holder / Assigned To',
+                'Purchase Date', 
+                'Purchase Cost (Rp)', 
+                'Description / Notes'
+            ]);
+
+            foreach ($assets as $index => $asset) {
+                fputcsv($file, [
+                    $index + 1,
+                    $asset->code,
+                    $asset->name,
+                    $asset->category ? $asset->category->name : '-',
+                    $asset->location ? $asset->location->name : '-',
+                    $asset->supplier ? $asset->supplier->name : '-',
+                    $asset->condition,
+                    $asset->status,
+                    $asset->assigned_to ? $asset->assigned_to : '-',
+                    $asset->purchase_date ? $asset->purchase_date : '-',
+                    ceil($asset->purchase_cost),
+                    $asset->description ? $asset->description : '-'
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function getNotifications()
+    {
+        $lowStockConsumables = \App\Models\Consumable::whereColumn('stock', '<=', 'min_stock')->get();
+        $notifications = [];
+
+        foreach ($lowStockConsumables as $item) {
+            $notifications[] = [
+                'id' => 'consumable-' . $item->id,
+                'title' => 'Low Stock Warning',
+                'message' => "Item '{$item->name}' is low: {$item->stock} {$item->unit} remaining (Min: {$item->min_stock} {$item->unit})",
+                'type' => 'warning',
+                'url' => route('consumables.index') . '?low_stock=1',
+                'time' => 'Action required'
+            ];
+        }
+
+        // Also add general alerts for critical assets that are "Broken"
+        $brokenAssets = \App\Models\Asset::where('condition', 'Broken')->get();
+        foreach ($brokenAssets as $asset) {
+            $notifications[] = [
+                'id' => 'asset-' . $asset->id,
+                'title' => 'Asset Damage Report',
+                'message' => "Asset '{$asset->name}' ({$asset->code}) is reported Broken.",
+                'type' => 'danger',
+                'url' => route('assets.index') . "?search=" . urlencode($asset->code),
+                'time' => 'Review required'
+            ];
+        }
+
+        return response()->json([
+            'count' => count($notifications),
+            'notifications' => $notifications
+        ]);
+    }
+
+    public function globalSearch(Request $request)
+    {
+        $q = $request->query('q');
+        if (empty($q) || strlen($q) < 2) {
+            return response()->json([
+                'results' => []
+            ]);
+        }
+
+        $results = [];
+
+        // Search Fixed Assets
+        $assets = \App\Models\Asset::with('category')
+            ->where('name', 'like', "%{$q}%")
+            ->orWhere('code', 'like', "%{$q}%")
+            ->take(5)
+            ->get();
+
+        foreach ($assets as $asset) {
+            $results[] = [
+                'title' => $asset->name,
+                'subtitle' => $asset->code . ' • ' . ($asset->category ? $asset->category->name : 'Asset'),
+                'url' => route('assets.index') . "?search=" . urlencode($asset->code),
+                'type' => 'Asset',
+                'icon' => 'bi-box-seam'
+            ];
+        }
+
+        // Search Consumables
+        $consumables = \App\Models\Consumable::with('category')
+            ->where('name', 'like', "%{$q}%")
+            ->take(5)
+            ->get();
+
+        foreach ($consumables as $item) {
+            $results[] = [
+                'title' => $item->name,
+                'subtitle' => "Stock: {$item->stock} {$item->unit} • " . ($item->category ? $item->category->name : 'Consumable'),
+                'url' => route('consumables.index') . "?search=" . urlencode($item->name),
+                'type' => 'Consumable',
+                'icon' => 'bi-basket'
+            ];
+        }
+
+        // Search Categories
+        $categories = \App\Models\Category::where('name', 'like', "%{$q}%")
+            ->take(3)
+            ->get();
+
+        foreach ($categories as $cat) {
+            $results[] = [
+                'title' => $cat->name,
+                'subtitle' => "Category Profile",
+                'url' => route('categories.index') . "?search=" . urlencode($cat->name),
+                'type' => 'Category',
+                'icon' => 'bi-tags'
+            ];
+        }
+
+        return response()->json([
+            'results' => $results
+        ]);
+    }
+}
