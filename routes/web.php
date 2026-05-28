@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Admin\AppConfigController;
+use App\Http\Controllers\StockOpnameController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,6 +44,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('consumables/export', [ConsumableController::class, 'export'])->name('consumables.export');
     Route::get('consumables/generate-code/{category_id}', [ConsumableController::class, 'generateCode'])->name('consumables.generate-code');
     Route::resource('consumables', ConsumableController::class);
+
+    // Stock Opnames
+    Route::resource('stock-opnames', StockOpnameController::class);
 
     // Master Data
     Route::get('categories/{category}/items', [CategoryController::class, 'items'])->name('categories.items');

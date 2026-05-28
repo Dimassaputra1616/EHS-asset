@@ -41,4 +41,12 @@ class Consumable extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    /**
+     * Get the stock opnames for the consumable.
+     */
+    public function stockOpnames(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(StockOpname::class);
+    }
 }
