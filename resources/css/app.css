@@ -2302,4 +2302,69 @@ div.dataTables_wrapper div.dataTables_info {
     to { transform: rotate(360deg); }
 }
 
+/* ==========================================================
+   HYPER-PREMIUM DATATABLES PROCESSING INDICATOR OVERRIDE
+   ========================================================== */
+div.dataTables_wrapper div.dataTables_processing {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 200px !important;
+    height: 54px !important;
+    margin-left: -100px !important;
+    margin-top: -27px !important;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(15px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    border-radius: 30px !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 
+                0 1px 3px rgba(0, 0, 0, 0.02),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+    z-index: 1050 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.65rem !important;
+    color: var(--text-main) !important;
+    font-weight: 700 !important;
+    font-size: 0.82rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    animation: processingEntrance 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+    text-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* Hide default library blue bouncing dots */
+div.dataTables_wrapper div.dataTables_processing div {
+    display: none !important;
+}
+
+/* Premium Rotating Glowing Liquid Core Ring */
+div.dataTables_wrapper div.dataTables_processing::before {
+    content: '' !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    border: 2.5px solid rgba(192, 57, 43, 0.08) !important;
+    border-radius: 50% !important;
+    border-top-color: var(--hse-red) !important;
+    border-right-color: var(--hse-red-light) !important;
+    animation: spin 0.6s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite !important;
+    box-shadow: 0 0 8px rgba(192, 57, 43, 0.2) !important;
+}
+
+@keyframes processingEntrance {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -40%) scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
 
