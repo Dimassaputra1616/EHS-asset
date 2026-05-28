@@ -88,6 +88,12 @@ class AppConfigSeeder extends Seeder
                 'label' => 'Show Sidebar Logo',
                 'group' => 'appearance',
             ],
+            [
+                'key' => 'login_bg',
+                'value' => 'images/auth/welcome-bg.png',
+                'label' => 'Login Background Image',
+                'group' => 'appearance',
+            ],
         ];
 
         foreach ($configs as $config) {

@@ -41,6 +41,28 @@ class AppConfigController extends Controller
             unset($data['app_logo']);
         }
 
+        // 2b. Process custom login background file uploads securely
+        if ($request->hasFile('login_bg')) {
+            $request->validate([
+                'login_bg' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:3072',
+            ]);
+
+            // Retrieve and purge the old background file to prevent storage bloat
+            $oldBg = AppConfig::where('key', 'login_bg')->value('value');
+            if ($oldBg && !str_contains($oldBg, 'images/auth') && \Illuminate\Support\Facades\Storage::disk('public')->exists($oldBg)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($oldBg);
+            }
+
+            // Store the newly uploaded background inside public storage disk
+            $path = $request->file('login_bg')->store('backgrounds', 'public');
+
+            // Record relative file path in database config entry
+            AppConfig::where('key', 'login_bg')->update(['value' => $path]);
+
+            // Unset key from data payload so we don't try to double update it
+            unset($data['login_bg']);
+        }
+
         // 3. Process and update remaining configuration parameters
         foreach ($data as $key => $value) {
             AppConfig::where('key', $key)->update(['value' => $value]);

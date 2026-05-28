@@ -112,7 +112,7 @@
                 background-image: linear-gradient(
                     color-mix(in srgb, var(--hse-red) 45%, transparent), 
                     color-mix(in srgb, color-mix(in srgb, var(--hse-red) 70%, black) 45%, transparent)
-                ), url('/images/auth/welcome-bg.png');
+                ), url('{{ str_contains(config('app.login_bg', 'images/auth/welcome-bg.png'), 'images/auth') ? asset(config('app.login_bg', 'images/auth/welcome-bg.png')) : asset('storage/' . config('app.login_bg')) }}');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;

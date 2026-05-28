@@ -226,6 +226,25 @@
                                                                 </div>
                                                                 <div class="small text-muted">Upload a crisp branding asset (PNG, JPG, SVG, or WEBP, max 2MB).</div>
                                                             </div>
+                                                        @elseif($config->key == 'login_bg')
+                                                            <div class="mt-2 d-flex flex-column gap-3">
+                                                                <!-- Modern Landscape Image Preview Frame -->
+                                                                <div class="d-flex align-items-center gap-3 logo-uploader-frame">
+                                                                    <div class="border rounded-3 p-1 bg-white d-flex align-items-center justify-content-center shadow-sm" style="width: 140px; height: 80px; overflow: hidden; flex-shrink: 0;">
+                                                                        @php
+                                                                            $bgValue = $config->value ?: 'images/auth/welcome-bg.png';
+                                                                            $bgUrl = str_contains($bgValue, 'images/auth') ? asset($bgValue) : asset('storage/' . $bgValue);
+                                                                        @endphp
+                                                                        <img id="login-bg-preview-img" src="{{ $bgUrl }}" alt="Login Background" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;">
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <div class="small fw-bold text-dark">Current Login Background</div>
+                                                                        <div class="small text-muted mb-2">A landscape image preview for the left side branding panel on login screen.</div>
+                                                                        <input type="file" name="{{ $config->key }}" id="{{ $config->key }}" class="form-control form-control-lg fs-6" accept="image/*" onchange="previewLoginBg(this)" style="max-width: 320px;">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="small text-muted">Upload a premium landscape banner (PNG, JPG, or WEBP, max 3MB). Recommended size: 1920x1080.</div>
+                                                            </div>
                                                         @elseif($config->key == 'sidebar_theme')
                                                              <select name="{{ $config->key }}" id="{{ $config->key }}" class="form-select form-select-lg mt-1 fs-6" style="max-width: 280px;">
                                                                  <option value="Dark" {{ $config->value == 'Dark' ? 'selected' : '' }}>Midnight Dark 🖤</option>
@@ -373,6 +392,21 @@
                 }
                 
                 imgEl.src = e.target.result;
+            };
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewLoginBg(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const imgEl = document.getElementById('login-bg-preview-img');
+                if (imgEl) {
+                    imgEl.src = e.target.result;
+                }
             };
             
             reader.readAsDataURL(input.files[0]);
