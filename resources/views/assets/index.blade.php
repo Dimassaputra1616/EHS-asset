@@ -38,6 +38,31 @@
         font-weight: 600 !important;
         font-size: 0.85rem !important;
     }
+
+    /* Premium Springy Modal Animation */
+    .modal.fade .modal-dialog {
+        transform: scale(0.92) translateY(25px);
+        opacity: 0;
+        transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .modal.show .modal-dialog {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+    .modal-content {
+        border-radius: 20px !important;
+        overflow: hidden;
+    }
+    
+    /* Frosted Glass Backdrop for Modals */
+    .modal-backdrop {
+        background-color: rgba(15, 23, 42, 0.3) !important;
+        backdrop-filter: blur(6px);
+        transition: opacity 0.35s ease !important;
+    }
+    .modal-backdrop.show {
+        opacity: 1 !important;
+    }
 </style>
 @endpush
 
