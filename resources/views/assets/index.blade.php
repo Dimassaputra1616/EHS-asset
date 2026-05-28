@@ -318,7 +318,7 @@
                     $('#scannerModal').modal('hide');
                 },
                 (errorMessage) => {}
-            }).then(() => {
+            ).then(() => {
                 $('#scanner-status').html('<span class="text-success fw-bold"><i class="bi bi-circle-fill text-success animate-pulse me-1"></i> Scanner Active. Point at an asset barcode.</span>');
             }).catch(err => {
                 let errorMsg = err;
