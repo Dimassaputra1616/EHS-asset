@@ -194,6 +194,12 @@
                 </div>
                 <span>Stock Out</span>
             </a>
+            <a href="{{ route('stock-opnames.index') }}" class="pwa-more-item">
+                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #F1C40F, #F39C12);">
+                    <i class="bi bi-clipboard-data"></i>
+                </div>
+                <span>Stock Opname</span>
+            </a>
             <a href="{{ route('profile.edit') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #8E44AD, #7D3C98);">
                     <i class="bi bi-person-fill"></i>
