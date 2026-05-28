@@ -109,7 +109,10 @@
                 padding: 3rem;
                 position: relative;
                 overflow: hidden;
-                background-image: linear-gradient(rgba(192, 57, 43, 0.4), rgba(100, 20, 14, 0.45)), url('/images/auth/welcome-bg.png');
+                background-image: linear-gradient(
+                    color-mix(in srgb, var(--hse-red) 45%, transparent), 
+                    color-mix(in srgb, color-mix(in srgb, var(--hse-red) 70%, black) 45%, transparent)
+                ), url('/images/auth/welcome-bg.png');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
