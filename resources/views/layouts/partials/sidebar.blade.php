@@ -438,14 +438,14 @@
             <i class="bi bi-box-seam"></i> <span>Fixed Assets</span>
         </a>
         
-        <a class="list-group-item d-flex justify-content-between align-items-center {{ request()->routeIs('consumables.*') || request()->routeIs('stock-opnames.*') ? 'active' : '' }}" 
-           href="#consumablesSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('consumables.*') || request()->routeIs('stock-opnames.*') ? 'true' : 'false' }}">
+        <a class="list-group-item d-flex justify-content-between align-items-center {{ request()->routeIs('consumables.*') ? 'active' : '' }}" 
+           href="#consumablesSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('consumables.*') ? 'true' : 'false' }}">
             <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-basket"></i> <span>Consumables</span>
             </div>
             <i class="bi bi-chevron-down small collapse-arrow"></i>
         </a>
-        <div class="collapse {{ request()->routeIs('consumables.*') || request()->routeIs('stock-opnames.*') ? 'show' : '' }}" id="consumablesSubmenu">
+        <div class="collapse {{ request()->routeIs('consumables.*') ? 'show' : '' }}" id="consumablesSubmenu">
             <div class="sidebar-submenu">
                 <a class="list-group-item border-0 py-2 {{ request()->routeIs('consumables.index') ? 'active' : '' }}" href="{{ route('consumables.index') }}">
                     <i class="bi bi-circle-fill" style="font-size: 6px;"></i> Stock Consumables
@@ -456,11 +456,12 @@
                 <a class="list-group-item border-0 py-2 {{ request()->routeIs('consumables.transactions.out') ? 'active' : '' }}" href="{{ route('consumables.transactions.out') }}">
                     <i class="bi bi-box-arrow-up text-danger"></i> Barang Keluar
                 </a>
-                <a class="list-group-item border-0 py-2 {{ request()->routeIs('stock-opnames.*') ? 'active' : '' }}" href="{{ route('stock-opnames.index') }}">
-                    <i class="bi bi-clipboard2-check text-warning"></i> Stock Opname
-                </a>
             </div>
         </div>
+
+        <a class="list-group-item {{ request()->routeIs('stock-opnames.*') ? 'active' : '' }}" href="{{ route('stock-opnames.index') }}">
+            <i class="bi bi-clipboard2-check text-warning"></i> <span>Stock Opname</span>
+        </a>
 
         <div class="sidebar-section-header">Master Data</div>
         
