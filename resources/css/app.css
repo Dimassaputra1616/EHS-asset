@@ -905,7 +905,7 @@ a[aria-expanded="true"] .collapse-arrow {
     width: 250px;
     height: 250px;
     border-radius: 50%;
-    background: rgba(192, 57, 43, 0.15);
+    background: color-mix(in srgb, var(--hse-red) 15%, transparent) !important;
 }
 .welcome-banner::after {
     content: '';
@@ -915,7 +915,7 @@ a[aria-expanded="true"] .collapse-arrow {
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    background: rgba(192, 57, 43, 0.08);
+    background: color-mix(in srgb, var(--hse-red) 8%, transparent) !important;
 }
 .welcome-banner .welcome-text h2 {
     font-weight: 800;

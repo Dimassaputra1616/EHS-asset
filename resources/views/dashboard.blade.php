@@ -15,7 +15,7 @@
     <!-- Stat Cards -->
     <div class="col-xxl-3 col-xl-6 col-md-6">
         <a href="/assets" class="text-decoration-none d-block">
-            <div class="stat-card" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); cursor: pointer;">
+            <div class="stat-card" style="background: linear-gradient(135deg, var(--hse-red-light) 0%, var(--hse-red) 100%); cursor: pointer;">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-value">{{ \App\Models\Asset::count() }}</div>
@@ -31,7 +31,7 @@
     
     <div class="col-xxl-3 col-xl-6 col-md-6">
         <a href="/consumables" class="text-decoration-none d-block">
-            <div class="stat-card" style="background: linear-gradient(135deg, #C0392B 0%, #922B21 100%); cursor: pointer;">
+            <div class="stat-card" style="background: linear-gradient(135deg, var(--hse-red) 0%, var(--hse-red-dark) 100%); cursor: pointer;">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-value">{{ \App\Models\Consumable::count() }}</div>
@@ -47,7 +47,7 @@
 
     <div class="col-xxl-3 col-xl-6 col-md-6">
         <a href="/consumables?low_stock=1" class="text-decoration-none d-block">
-            <div class="stat-card" style="background: linear-gradient(135deg, #922B21 0%, #641E16 100%); cursor: pointer;">
+            <div class="stat-card" style="background: linear-gradient(135deg, var(--hse-red-dark) 0%, color-mix(in srgb, var(--hse-red-dark) 70%, black) 100%); cursor: pointer;">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-value">{{ \App\Models\Consumable::where('stock', '<=', (int) config('app.low_stock_threshold', 10))->count() }}</div>
@@ -67,7 +67,7 @@
         @else
         <div class="d-block">
         @endrole
-            <div class="stat-card" style="background: linear-gradient(135deg, #A93226 0%, #7B241C 100%); cursor: {{ Auth::user()->hasRole('admin') ? 'pointer' : 'default' }};">
+            <div class="stat-card" style="background: linear-gradient(135deg, color-mix(in srgb, var(--hse-red) 85%, black) 0%, color-mix(in srgb, var(--hse-red) 65%, black) 100%); cursor: {{ Auth::user()->hasRole('admin') ? 'pointer' : 'default' }};">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-value">{{ \App\Models\User::count() }}</div>
@@ -98,7 +98,7 @@
         <a href="{{ route('assets.create') }}" class="text-decoration-none d-block">
             <div class="card border-0 shadow-sm h-100 quick-action-card">
                 <div class="card-body d-flex align-items-center gap-3 py-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: linear-gradient(135deg, #E74C3C, #C0392B);">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: var(--hse-red-gradient);">
                         <i class="bi bi-plus-lg text-white fs-5"></i>
                     </div>
                     <div>
