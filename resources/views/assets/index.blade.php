@@ -263,88 +263,25 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     $(function() {
-        let html5QrcodeScanner = null;
-        let lastResult = '';
-        let currentAsset = null;
+        // Curated list of barcode formats for absolute multi-device compatibility (including CODE128)
+        let supportedFormats = [];
+        if (typeof Html5QrcodeSupportedFormats !== 'undefined') {
+            supportedFormats = [
+                Html5QrcodeSupportedFormats.QR_CODE,
+                Html5QrcodeSupportedFormats.CODE_128,
+                Html5QrcodeSupportedFormats.CODE_39,
+                Html5QrcodeSupportedFormats.EAN_13,
+                Html5QrcodeSupportedFormats.EAN_8,
+                Html5QrcodeSupportedFormats.UPC_A,
+                Html5QrcodeSupportedFormats.UPC_E
+            ];
+        } else {
+            supportedFormats = [0, 4, 3, 5, 6, 9, 10]; // Fallback to integer representation
+        }
 
-        // Scanner Logic
-        $('#scannerModal').on('shown.bs.modal', function () {
-            $('#scanner-status').html('<span class="spinner-border spinner-border-sm text-secondary me-2"></span>Starting camera...');
-            lastResult = '';
-            
-            html5QrcodeScanner = new Html5Qrcode("reader");
-            
-            const config = { 
-                fps: 30, // 3x higher frame rate for split-second captures
-                qrbox: function(width, height) {
-                    return {
-                        width: Math.floor(width * 0.85), // Widen scan frame for horizontal 1D barcodes
-                        height: Math.floor(height * 0.6)
-                    };
-                },
-                aspectRatio: 1.333333,
-                experimentalFeatures: {
-                    useBarCodeDetectorIfSupported: true // Activate browser native hardware accelerated scanning engine
-                }
-            };
-            
-            html5QrcodeScanner.start(
-                { 
-                    facingMode: "environment",
-                    width: { min: 640, ideal: 1280 }, // Request high-resolution frame for sharp line scanning
-                    height: { min: 480, ideal: 720 }
-                },
-                config,
-                (decodedText, decodedResult) => {
-                    if (decodedText === lastResult) return;
-                    lastResult = decodedText;
-                    
-                    try {
-                        let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-84.wav');
-                        audio.volume = 0.5;
-                        audio.play().catch(e => {});
-                    } catch (e) {
-                        console.error('Audio cue error:', e);
-                    }
-
-                    let table = $('#assets-table').DataTable();
-                    table.search(decodedText).draw();
-                    
-                    $('.dataTables_filter input').addClass('border-danger').css('box-shadow', '0 0 0 4px rgba(192, 57, 43, 0.2)');
-                    setTimeout(() => {
-                        $('.dataTables_filter input').removeClass('border-danger').css('box-shadow', 'none');
-                    }, 1500);
-
-                    $('#scannerModal').modal('hide');
-                },
-                (errorMessage) => {}
-            ).then(() => {
-                $('#scanner-status').html('<span class="text-success fw-bold"><i class="bi bi-circle-fill text-success animate-pulse me-1"></i> Scanner Active. Point at an asset barcode.</span>');
-            }).catch(err => {
-                let errorMsg = err;
-                if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-                    errorMsg = "Kamera diblokir oleh browser karena menggunakan HTTP biasa. Silakan gunakan link HTTPS aman terowongan agar kamera aktif: <a href='" + window.location.href.replace('http://', 'https://') + "' class='text-decoration-underline text-danger fw-bold' target='_blank'>Buka via HTTPS</a>";
-                }
-                $('#scanner-status').html('<span class="text-danger fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i> Akses Kamera Gagal:<br><span class="small fw-normal text-muted d-block mt-1">' + errorMsg + '</span></span>');
-            });
-        });
-
-        $('#scannerModal').on('hidden.bs.modal', function () {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.stop().then(() => {
-                    html5QrcodeScanner = null;
-                    $('#reader').html('');
-                }).catch(err => {
-                    console.error('Error stopping scanner:', err);
-                });
-            }
-        });
-
-        // VIEW ASSET & BARCODE GENERATOR
-        $(document).on('click', '.btn-view', function() {
-            let id = $(this).data('id');
-            
-            // Show loading placeholder
+        // Helper to load and display asset details modal dynamically
+        function showAssetDetails(id) {
+            // Show loading placeholders
             $('#view-name').text('Loading...');
             $('#view-category').text('-');
             $('#view-location').text('-');
@@ -407,6 +344,115 @@
                     $('#viewAssetModal').modal('hide');
                     Swal.fire('Error', 'Failed to load asset details.', 'error');
                 });
+        }
+
+        // Scanner Logic
+        $('#scannerModal').on('shown.bs.modal', function () {
+            $('#scanner-status').html('<span class="spinner-border spinner-border-sm text-secondary me-2"></span>Starting camera...');
+            lastResult = '';
+            
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            
+            const config = { 
+                fps: 30, // 3x higher frame rate for split-second captures
+                qrbox: function(width, height) {
+                    return {
+                        width: Math.floor(width * 0.85), // Widen scan frame for horizontal 1D barcodes
+                        height: Math.floor(height * 0.6)
+                    };
+                },
+                aspectRatio: 1.333333,
+                formatsToSupport: supportedFormats, // Explicitly tell scanner to listen to CODE128 barcodes!
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true // Activate browser native hardware accelerated scanning engine
+                }
+            };
+            
+            html5QrcodeScanner.start(
+                { 
+                    facingMode: "environment",
+                    width: { min: 640, ideal: 1280 }, // Request high-resolution frame for sharp line scanning
+                    height: { min: 480, ideal: 720 }
+                },
+                config,
+                (decodedText, decodedResult) => {
+                    if (decodedText === lastResult) return;
+                    lastResult = decodedText;
+                    
+                    try {
+                        let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-84.wav');
+                        audio.volume = 0.5;
+                        audio.play().catch(e => {});
+                    } catch (e) {
+                        console.error('Audio cue error:', e);
+                    }
+
+                    // Hide scanner immediately
+                    $('#scannerModal').modal('hide');
+
+                    // Filter table list
+                    let table = $('#assets-table').DataTable();
+                    table.search(decodedText).draw();
+                    
+                    $('.dataTables_filter input').addClass('border-danger').css('box-shadow', '0 0 0 4px rgba(192, 57, 43, 0.2)');
+                    setTimeout(() => {
+                        $('.dataTables_filter input').removeClass('border-danger').css('box-shadow', 'none');
+                    }, 1500);
+
+                    // Client-side quick row lookup for instant detail presentation!
+                    let assetId = null;
+                    table.rows().every(function() {
+                        let rowData = this.data();
+                        if (rowData.code === decodedText || rowData.name === decodedText) {
+                            assetId = rowData.id;
+                            return false; // Break loop
+                        }
+                    });
+
+                    if (assetId) {
+                        showAssetDetails(assetId);
+                    } else {
+                        // Fallback: search backend for matching code if not on current datatable page
+                        fetch('/api/search?q=' + encodeURIComponent(decodedText))
+                            .then(res => res.json())
+                            .then(data => {
+                                // Redraw table, wait, then trigger view
+                                setTimeout(() => {
+                                    let firstRow = table.row(0).data();
+                                    if (firstRow) {
+                                        showAssetDetails(firstRow.id);
+                                    }
+                                }, 500);
+                            });
+                    }
+                },
+                (errorMessage) => {}
+            ).then(() => {
+                $('#scanner-status').html('<span class="text-success fw-bold"><i class="bi bi-circle-fill text-success animate-pulse me-1"></i> Scanner Active. Point at an asset barcode.</span>');
+            }).catch(err => {
+                let errorMsg = err;
+                if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                    errorMsg = "Kamera diblokir oleh browser karena menggunakan HTTP biasa. Silakan gunakan link HTTPS aman terowongan agar kamera aktif: <a href='" + window.location.href.replace('http://', 'https://') + "' class='text-decoration-underline text-danger fw-bold' target='_blank'>Buka via HTTPS</a>";
+                }
+                $('#scanner-status').html('<span class="text-danger fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i> Akses Kamera Gagal:<br><span class="small fw-normal text-muted d-block mt-1">' + errorMsg + '</span></span>');
+            });
+        });
+
+        $('#scannerModal').on('hidden.bs.modal', function () {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then(() => {
+                    html5QrcodeScanner = null;
+                    $('#reader').html('');
+                }).catch(err => {
+                    console.error('Error stopping scanner:', err);
+                });
+            }
+        });
+
+        // VIEW ASSET EVENT BINDING
+        $(document).on('click', '.btn-view', function() {
+            let id = $(this).data('id');
+            showAssetDetails(id);
         });
 
         // PRINT BARCODE LABEL
