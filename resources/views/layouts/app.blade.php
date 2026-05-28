@@ -287,8 +287,10 @@
                     toggleBtn.addEventListener("click", function(e) {
                         e.preventDefault();
                         wrapper.classList.toggle("toggled");
-                        overlay.classList.toggle("active");
-                        document.body.classList.toggle("sidebar-open");
+                        if (window.innerWidth < 992) {
+                            overlay.classList.toggle("active");
+                            document.body.classList.toggle("sidebar-open");
+                        }
                     });
                     
                     overlay.addEventListener("click", function() {
