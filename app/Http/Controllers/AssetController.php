@@ -139,7 +139,8 @@ class AssetController extends Controller
         if (str_contains(strtolower($name), 'hydrant')) $prefix = 'HYD';
 
         // Find next sequence
-        $lastAsset = Asset::where('code', 'like', "HSE-{$prefix}-%")
+        $codePrefix = config('app.asset_code_prefix', 'AST');
+        $lastAsset = Asset::where('code', 'like', "{$codePrefix}-{$prefix}-%")
             ->orderBy('code', 'desc')
             ->first();
 
@@ -152,7 +153,7 @@ class AssetController extends Controller
             }
         }
         
-        $code = sprintf("HSE-%s-%03d", $prefix, $nextSeq);
+        $code = sprintf("%s-%s-%03d", $codePrefix, $prefix, $nextSeq);
         return response()->json(['code' => $code]);
     }
 
@@ -223,14 +224,15 @@ class AssetController extends Controller
 
     public function getNotifications()
     {
-        $lowStockConsumables = \App\Models\Consumable::whereColumn('stock', '<=', 'min_stock')->get();
+        $threshold = (int) config('app.low_stock_threshold', 10);
+        $lowStockConsumables = \App\Models\Consumable::where('stock', '<=', $threshold)->get();
         $notifications = [];
 
         foreach ($lowStockConsumables as $item) {
             $notifications[] = [
                 'id' => 'consumable-' . $item->id,
                 'title' => 'Low Stock Warning',
-                'message' => "Item '{$item->name}' is low: {$item->stock} {$item->unit} remaining (Min: {$item->min_stock} {$item->unit})",
+                'message' => "Item '{$item->name}' is low: {$item->stock} {$item->unit} remaining (Min: {$threshold} {$item->unit})",
                 'type' => 'warning',
                 'url' => route('consumables.index') . '?low_stock=1',
                 'time' => 'Action required'

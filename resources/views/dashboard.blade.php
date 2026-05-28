@@ -50,7 +50,7 @@
             <div class="stat-card" style="background: linear-gradient(135deg, #922B21 0%, #641E16 100%); cursor: pointer;">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="stat-value">{{ \App\Models\Consumable::whereColumn('stock', '<=', 'min_stock')->count() }}</div>
+                        <div class="stat-value">{{ \App\Models\Consumable::where('stock', '<=', (int) config('app.low_stock_threshold', 10))->count() }}</div>
                         <div class="stat-label mt-2">Low Stock Alerts</div>
                     </div>
                     <div class="stat-icon text-white">
@@ -245,7 +245,8 @@
             </div>
             <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
-                    @forelse(\App\Models\Consumable::whereColumn('stock', '<=', 'min_stock')->latest()->take(5)->get() as $item)
+                    @php $lowThreshold = (int) config('app.low_stock_threshold', 10); @endphp
+                    @forelse(\App\Models\Consumable::where('stock', '<=', $lowThreshold)->latest()->take(5)->get() as $item)
                     <li class="list-group-item px-4 py-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center gap-3">
@@ -254,7 +255,7 @@
                                 </div>
                                 <div>
                                     <div class="fw-bold text-dark" style="font-size: 0.9rem;">{{ $item->name }}</div>
-                                    <small class="text-muted">Min: {{ $item->min_stock }} {{ $item->unit }}</small>
+                                    <small class="text-muted">Min: {{ $lowThreshold }} {{ $item->unit }}</small>
                                 </div>
                             </div>
                             <div class="text-end">
@@ -262,7 +263,7 @@
                                 <small class="text-muted">{{ $item->unit }} left</small>
                             </div>
                         </div>
-                        @php $pct = $item->min_stock > 0 ? min(($item->stock / $item->min_stock) * 100, 100) : 0; @endphp
+                        @php $pct = $lowThreshold > 0 ? min(($item->stock / $lowThreshold) * 100, 100) : 0; @endphp
                         <div class="progress mt-2" style="height: 4px;">
                             <div class="progress-bar {{ $pct <= 30 ? 'bg-danger' : ($pct <= 70 ? 'bg-warning' : 'bg-success') }}" style="width: {{ $pct }}%"></div>
                         </div>
@@ -276,7 +277,7 @@
                                 </div>
                             </div>
                             <h6 class="text-dark mb-1">All stocks healthy!</h6>
-                            <p class="small text-muted mb-0">No items are below minimum stock level.</p>
+                            <p class="small text-muted mb-0">No items are at or below {{ $lowThreshold }} units.</p>
                         </div>
                     </li>
                     @endforelse

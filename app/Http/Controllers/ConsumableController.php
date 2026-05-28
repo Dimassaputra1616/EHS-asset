@@ -18,7 +18,8 @@ class ConsumableController extends Controller
             }
 
             if ($request->query('low_stock') == '1') {
-                $data->whereColumn('stock', '<=', 'min_stock');
+                $threshold = (int) config('app.low_stock_threshold', 10);
+                $data->where('stock', '<=', $threshold);
             }
 
             return DataTables::of($data)
@@ -27,7 +28,8 @@ class ConsumableController extends Controller
                     return $row->category ? $row->category->name : '-';
                 })
                 ->addColumn('stock_status', function($row){
-                    if ($row->stock <= $row->min_stock) {
+                    $threshold = (int) config('app.low_stock_threshold', 10);
+                    if ($row->stock <= $threshold) {
                         return '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1"><i class="bi bi-exclamation-triangle me-1"></i> LOW STOCK</span>';
                     }
                     return '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1"><i class="bi bi-check-circle me-1"></i> IN STOCK</span>';
@@ -201,7 +203,8 @@ class ConsumableController extends Controller
         if (str_contains(strtolower($name), 'sepatu')) $prefix = 'SPT';
 
         // Find next sequence
-        $lastConsumable = Consumable::where('code', 'like', "HSE-{$prefix}-%")
+        $codePrefix = config('app.consumable_code_prefix', 'CSM');
+        $lastConsumable = Consumable::where('code', 'like', "{$codePrefix}-{$prefix}-%")
             ->orderBy('code', 'desc')
             ->first();
 
@@ -214,7 +217,7 @@ class ConsumableController extends Controller
             }
         }
         
-        $code = sprintf("HSE-%s-%03d", $prefix, $nextSeq);
+        $code = sprintf("%s-%s-%03d", $codePrefix, $prefix, $nextSeq);
         return response()->json(['code' => $code]);
     }
 }

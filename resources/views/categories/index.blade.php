@@ -106,6 +106,8 @@
             }
         });
 
+        const lowStockThreshold = {{ (int) config('app.low_stock_threshold', 10) }};
+
         function format(data) {
             let category = data.category;
             let items = data.items;
@@ -166,7 +168,7 @@
                 
                 items.forEach((item, index) => {
                     let stockClass = 'text-dark';
-                    if (item.stock <= item.min_stock) {
+                    if (item.stock <= lowStockThreshold) {
                         stockClass = 'text-danger fw-bold';
                     }
                     
@@ -178,7 +180,7 @@
                             <td>
                                 <span class="${stockClass}">${item.stock}</span> 
                                 <small class="text-muted">${item.unit || 'pcs'}</small>
-                                ${item.stock <= item.min_stock ? '<span class="badge bg-danger ms-1" style="font-size: 0.7rem;">Low Stock</span>' : ''}
+                                ${item.stock <= lowStockThreshold ? '<span class="badge bg-danger ms-1" style="font-size: 0.7rem;">Low Stock</span>' : ''}
                             </td>
                         </tr>
                     `;

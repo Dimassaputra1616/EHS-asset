@@ -35,9 +35,57 @@ class AppConfigSeeder extends Seeder
                 'group' => 'general',
             ],
             [
+                'key' => 'low_stock_threshold',
+                'value' => '10',
+                'label' => 'Low Stock Threshold',
+                'group' => 'general',
+            ],
+            [
+                'key' => 'asset_code_prefix',
+                'value' => 'AST',
+                'label' => 'Asset Code Prefix',
+                'group' => 'general',
+            ],
+            [
+                'key' => 'consumable_code_prefix',
+                'value' => 'CSM',
+                'label' => 'Consumable Code Prefix',
+                'group' => 'general',
+            ],
+            [
+                'key' => 'currency_symbol',
+                'value' => 'Rp',
+                'label' => 'Currency Symbol',
+                'group' => 'general',
+            ],
+            [
+                'key' => 'copyright_text',
+                'value' => '© 2026 HSE Guard Corp — v1.0',
+                'label' => 'Copyright Text',
+                'group' => 'general',
+            ],
+            [
                 'key' => 'primary_color',
                 'value' => '#C0392B',
                 'label' => 'Primary Color (HSE Red)',
+                'group' => 'appearance',
+            ],
+            [
+                'key' => 'sidebar_theme',
+                'value' => 'Dark',
+                'label' => 'Sidebar Theme Style',
+                'group' => 'appearance',
+            ],
+            [
+                'key' => 'glassmorphism_effects',
+                'value' => '1',
+                'label' => 'Enable Glassmorphism Effects',
+                'group' => 'appearance',
+            ],
+            [
+                'key' => 'show_sidebar_logo',
+                'value' => '1',
+                'label' => 'Show Sidebar Logo',
                 'group' => 'appearance',
             ],
         ];

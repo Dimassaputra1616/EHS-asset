@@ -195,7 +195,8 @@
                     $('#view-min-stock').text(data.min_stock + ' ' + data.unit);
                     
                     let statusHtml = '';
-                    if (data.stock <= data.min_stock) {
+                    const lowStockThreshold = {{ (int) config('app.low_stock_threshold', 10) }};
+                    if (data.stock <= lowStockThreshold) {
                         statusHtml = '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1"><i class="bi bi-exclamation-triangle me-1"></i> LOW STOCK</span>';
                     } else {
                         statusHtml = '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1"><i class="bi bi-check-circle me-1"></i> IN STOCK</span>';
@@ -275,13 +276,13 @@
             printWindow.document.write('  </div>');
             printWindow.document.write('  <div class="label-right">');
             printWindow.document.write('    <div>');
-            printWindow.document.write('      <div class="brand-title">HSE SYSTEM</div>');
+            printWindow.document.write('      <div class="brand-title">{{ config("app.name", "HSE SYSTEM") }}</div>');
             printWindow.document.write('      <h3 class="asset-name">' + name + '</h3>');
             printWindow.document.write('      <div class="asset-meta">' + categoryName + ' • ' + locationName + '</div>');
             printWindow.document.write('    </div>');
             printWindow.document.write('    <div class="label-footer">');
             printWindow.document.write('      <div class="asset-code-badge">' + code + '</div>');
-            printWindow.document.write('      <div class="footer-text">PROPERTY OF HSE</div>');
+            printWindow.document.write('      <div class="footer-text">PROPERTY OF {{ strtoupper(config("app.name", "HSE")) }}</div>');
             printWindow.document.write('    </div>');
             printWindow.document.write('  </div>');
             printWindow.document.write('</div>');

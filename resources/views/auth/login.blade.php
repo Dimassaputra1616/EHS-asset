@@ -54,7 +54,7 @@
 
     <div class="form-header fade-in-up">
         <h2>Welcome Back</h2>
-        <p>Sign in to your HSE Asset Management portal</p>
+        <p>Sign in to your {{ config('app.name', 'HSE Asset Management') }} portal</p>
     </div>
 
     <div class="separator-line fade-in-up">

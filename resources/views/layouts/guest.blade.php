@@ -26,9 +26,9 @@
 
         <style>
             :root {
-                --hse-red: #C0392B;
-                --hse-red-light: #e74c3c;
-                --hse-red-glow: rgba(192, 57, 43, 0.4);
+                --hse-red: {{ config('app.primary_color', '#C0392B') }};
+                --hse-red-light: color-mix(in srgb, var(--hse-red) 80%, white);
+                --hse-red-glow: color-mix(in srgb, var(--hse-red) 40%, transparent);
                 --light-bg: #f9fafb;
                 --text-dark: #111827;
                 --text-gray: #6b7280;
@@ -511,7 +511,7 @@
                 <div class="brand-logo-wrapper">
                     <!-- Updated SVG logo to use White fill -->
                     <x-application-logo style="width: 140px; height: 140px; fill: #ffffff;" />
-                    <div class="brand-title">HSE ASSET</div>
+                    <div class="brand-title">{{ config('app.name', 'HSE ASSET') }}</div>
                     <div class="brand-subtitle">Enterprise Management</div>
                 </div>
 
@@ -540,7 +540,7 @@
                 {{ $slot }}
 
                 <div class="auth-footer fade-in-up">
-                    <span>&copy; {{ date('Y') }} HSE Guard Corp &mdash; v1.0</span>
+                    <span>{{ config('app.copyright_text', '© ' . date('Y') . ' HSE Guard Corp — v1.0') }}</span>
                 </div>
             </div>
         </div>

@@ -1,13 +1,31 @@
 <div class="topbar">
     <div class="d-flex align-items-center">
-        <button class="sidebar-toggle-btn me-2 d-flex" id="sidebarToggle">
+        <!-- Desktop Sidebar Toggle Button -->
+        <button class="sidebar-toggle-btn me-2 d-none d-md-flex" id="sidebarToggle">
             <i class="bi bi-list fs-4"></i>
         </button>
+        
+        <!-- Mobile Left Icon / Back Button -->
+        @if(request()->routeIs('dashboard') || request()->routeIs('assets.index') || request()->routeIs('consumables.index'))
+            <!-- App Logo on Main Tab Pages (Mobile Only) -->
+            <div class="d-flex d-md-none align-items-center justify-content-center me-2" style="width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, rgba(192, 57, 43, 0.08) 0%, rgba(231, 76, 60, 0.04) 100%); border: 1px solid rgba(192, 57, 43, 0.12); color: var(--hse-red);">
+                @if(config('app.app_logo'))
+                    <img src="{{ Storage::url(config('app.app_logo')) }}" alt="Logo" style="max-width: 24px; max-height: 24px; object-fit: contain; border-radius: 4px;">
+                @else
+                    <i class="bi bi-shield-check fs-5"></i>
+                @endif
+            </div>
+        @else
+            <!-- Back Button on Sub-Pages / Details / Master Data (Mobile Only) -->
+            <a href="javascript:history.back()" class="topbar-icon-btn d-flex d-md-none me-2 align-items-center justify-content-center" style="width: 38px; height: 38px; border-radius: 10px; background: rgba(0,0,0,0.04); color: #6c757d; border: none; text-decoration: none;">
+                <i class="bi bi-chevron-left fs-5"></i>
+            </a>
+        @endif
         
         <!-- Animated Breadcrumb Area (Desktop) -->
         <nav aria-label="breadcrumb" class="d-none d-md-block">
             <ol class="breadcrumb page-breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="bi bi-house-door"></i> HSE System</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="bi bi-house-door"></i> {{ config('app.name', 'HSE System') }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">@yield('title', 'Dashboard')</li>
             </ol>
         </nav>

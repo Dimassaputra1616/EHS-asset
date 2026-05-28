@@ -26,9 +26,31 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
         <style>
+            :root {
+                --hse-red: {{ config('app.primary_color', '#C0392B') }} !important;
+                --hse-red-light: color-mix(in srgb, var(--hse-red) 80%, white) !important;
+                --hse-red-dark: color-mix(in srgb, var(--hse-red) 80%, black) !important;
+                --hse-red-gradient: linear-gradient(135deg, var(--hse-red) 0%, var(--hse-red-light) 100%) !important;
+                --hse-red-glow: 0 10px 25px color-mix(in srgb, var(--hse-red) 25%, transparent) !important;
+            }
             @yield('styles')
         </style>
         @stack('css')
+
+        @if(config('app.glassmorphism_effects', '1') == '0')
+        <style>
+            .alert-modern {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+            .alert-modern.alert-success {
+                background: #f0fdf4 !important;
+            }
+            .alert-modern.alert-danger {
+                background: #fef2f2 !important;
+            }
+        </style>
+        @endif
     </head>
     <body>
         <div id="wrapper">
@@ -211,28 +233,33 @@
         </div>
     </div>
  
-    <!-- Global Search Modal -->
-    <div class="modal fade" id="globalSearchModal" tabindex="-1" aria-labelledby="globalSearchModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content shadow-lg border-0" style="border-radius: 16px; overflow: hidden;">
-                <div class="modal-header border-0 bg-light p-3">
-                    <div class="d-flex align-items-center w-100 position-relative">
-                        <i class="bi bi-search text-muted fs-5 position-absolute" style="left: 15px;"></i>
-                        <input type="text" id="globalSearchInput" class="form-control border-0 bg-white shadow-none ps-5 py-3" placeholder="Type to search assets, consumables, categories... (min 2 chars)" style="font-size: 1.1rem; border-radius: 10px;">
-                        <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
+    <!-- Global Search Modal (Command Palette Style) -->
+    <div class="modal fade" id="globalSearchModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="search-bar-wrapper">
+                    <i class="bi bi-search search-icon-left"></i>
+                    <input type="text" id="globalSearchInput" class="search-input-field" placeholder="Search assets, consumables, categories..." autocomplete="off">
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
                 <div class="modal-body p-0">
-                    <div id="globalSearchResults" style="max-height: 350px; overflow-y: auto;">
-                        <div class="p-5 text-center text-muted">
-                            <i class="bi bi-search fs-1 mb-3 text-opacity-25 text-hse-red d-block"></i>
-                            <span class="small">Search code, name, unit or location in real-time</span>
+                    <div id="globalSearchResults">
+                        <div class="search-state-container">
+                            <i class="bi bi-search search-state-icon"></i>
+                            <div class="search-state-title">Search {{ config('app.name', 'HSE Asset Management') }}</div>
+                            <div class="search-state-desc">Find codes, names, serial numbers, units, or locations in real-time</div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-top bg-light py-2 px-3 justify-content-between">
-                    <small class="text-muted"><kbd class="bg-secondary text-white px-2 py-1 rounded small">Ctrl + K</kbd> to open</small>
-                    <small class="text-muted"><i class="bi bi-lightning-charge-fill text-warning me-1"></i>HSE Asset Instant Search</small>
+                <div class="modal-footer justify-content-between">
+                    <small class="text-muted">
+                        Press <span class="kbd-badge">Ctrl</span> + <span class="kbd-badge">K</span> to trigger search
+                    </small>
+                    <small class="text-muted">
+                        <i class="bi bi-lightning-charge-fill text-warning me-1"></i>Instant Search
+                    </small>
                 </div>
             </div>
         </div>
@@ -422,18 +449,20 @@
                         
                         if (q.length < 2) {
                             searchResults.innerHTML = `
-                                <div class="p-5 text-center text-muted">
-                                    <i class="bi bi-search fs-1 mb-3 text-opacity-25 text-hse-red d-block"></i>
-                                    <span class="small">Search code, name, unit or location in real-time</span>
+                                <div class="search-state-container">
+                                    <i class="bi bi-search search-state-icon"></i>
+                                    <div class="search-state-title">Search {{ config('app.name', 'HSE Asset Management') }}</div>
+                                    <div class="search-state-desc">Find codes, names, serial numbers, units, or locations in real-time</div>
                                 </div>
                             `;
                             return;
                         }
 
                         searchResults.innerHTML = `
-                            <div class="p-5 text-center text-muted">
-                                <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
-                                <span class="small">Searching for "${q}"...</span>
+                            <div class="search-state-container">
+                                <div class="search-loading-pulse"></div>
+                                <div class="search-state-title">Searching for "${q}"</div>
+                                <div class="search-state-desc">Scanning database assets and consumables...</div>
                             </div>
                         `;
 
@@ -442,18 +471,18 @@
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.results && data.results.length > 0) {
-                                        let html = '<div class="list-group list-group-flush">';
+                                        let html = '<div class="search-results-list">';
                                         data.results.forEach(item => {
                                             html += `
-                                                <a href="${item.url}" class="list-group-item list-group-item-action px-4 py-3 d-flex align-items-center gap-3 border-0 border-bottom">
-                                                    <div class="rounded-3 d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-hse-red flex-shrink-0" style="width: 38px; height: 38px;">
-                                                        <i class="bi ${item.icon} fs-5"></i>
+                                                <a href="${item.url}" class="search-result-item">
+                                                    <div class="result-icon-box">
+                                                        <i class="bi ${item.icon}"></i>
                                                     </div>
-                                                    <div class="flex-grow-1">
-                                                        <div class="fw-bold text-dark mb-0" style="font-size: 0.9rem;">${item.title}</div>
-                                                        <small class="text-muted">${item.subtitle}</small>
+                                                    <div class="result-info-box">
+                                                        <div class="result-title">${item.title}</div>
+                                                        <div class="result-subtitle">${item.subtitle}</div>
                                                     </div>
-                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10 px-2 py-1">${item.type}</span>
+                                                    <span class="result-type-badge">${item.type}</span>
                                                 </a>
                                             `;
                                         });
@@ -461,9 +490,10 @@
                                         searchResults.innerHTML = html;
                                     } else {
                                         searchResults.innerHTML = `
-                                            <div class="p-5 text-center text-muted">
-                                                <i class="bi bi-emoji-frown fs-1 mb-3 text-opacity-25 text-hse-red d-block"></i>
-                                                <span class="small">No matching results found for "${q}"</span>
+                                            <div class="search-state-container">
+                                                <i class="bi bi-emoji-frown search-state-icon" style="animation: none;"></i>
+                                                <div class="search-state-title">No results found</div>
+                                                <div class="search-state-desc">We couldn't find any assets, consumables, or categories matching "${q}"</div>
                                             </div>
                                         `;
                                     }
@@ -471,9 +501,10 @@
                                 .catch(err => {
                                     console.error(err);
                                     searchResults.innerHTML = `
-                                        <div class="p-5 text-center text-danger">
-                                            <i class="bi bi-exclamation-triangle fs-1 mb-3 d-block"></i>
-                                            <span class="small">Error occurred during search. Please try again.</span>
+                                        <div class="search-state-container">
+                                            <i class="bi bi-exclamation-triangle search-state-icon text-danger" style="animation: none;"></i>
+                                            <div class="search-state-title text-danger">Search Error</div>
+                                            <div class="search-state-desc">Something went wrong. Please check your network connection and try again.</div>
                                         </div>
                                     `;
                                 });
@@ -494,6 +525,21 @@
                             }, 500);
                         }
                     }
+                });
+
+                // Auto-dismiss alert-modern toasts after 5 seconds
+                const flashAlerts = document.querySelectorAll('.alert-modern');
+                flashAlerts.forEach(function(alert) {
+                    setTimeout(function() {
+                        const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                        if (bsAlert) {
+                            bsAlert.close();
+                        } else {
+                            alert.style.transition = 'opacity 0.5s ease';
+                            alert.style.opacity = '0';
+                            setTimeout(() => alert.remove(), 500);
+                        }
+                    }, 5000);
                 });
             });
         </script>

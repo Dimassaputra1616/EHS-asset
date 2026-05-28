@@ -103,7 +103,7 @@
                         <div class="col-md-3">
                             <label class="form-label fw-bold">Purchase Cost <span class="text-danger">*</span></label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-text bg-light">Rp</span>
+                                <span class="input-group-text bg-light">{{ config('app.currency_symbol', 'Rp') }}</span>
                                 <input type="number" name="purchase_cost" class="form-control fs-6 @error('purchase_cost') is-invalid @enderror" value="{{ old('purchase_cost', 0) }}" min="0" required>
                             </div>
                             @error('purchase_cost') <div class="invalid-feedback">{{ $message }}</div> @enderror

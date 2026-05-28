@@ -123,7 +123,7 @@
                         <div class="col-md-3">
                             <label class="form-label">Purchase Cost <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <span class="input-group-text">Rp</span>
+                                <span class="input-group-text">{{ config('app.currency_symbol', 'Rp') }}</span>
                                 <input type="number" name="purchase_cost" class="form-control @error('purchase_cost') is-invalid @enderror" value="{{ old('purchase_cost', ceil($asset->purchase_cost)) }}" min="0" required>
                             </div>
                             @error('purchase_cost') <div class="invalid-feedback">{{ $message }}</div> @enderror

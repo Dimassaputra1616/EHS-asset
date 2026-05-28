@@ -351,7 +351,7 @@
                     // Purchase date & cost
                     $('#view-purchase-date').text(asset.purchase_date ? asset.purchase_date : '-');
                     
-                    let costFormatted = 'Rp ' + parseFloat(asset.purchase_cost).toLocaleString('id-ID');
+                    let costFormatted = '{{ config("app.currency_symbol", "Rp") }} ' + parseFloat(asset.purchase_cost).toLocaleString('id-ID');
                     $('#view-purchase-cost').text(costFormatted);
                     $('#view-assigned-to').text(asset.assigned_to ? asset.assigned_to : '-');
                     $('#view-description').text(asset.description ? asset.description : '-');
@@ -427,13 +427,13 @@
             printWindow.document.write('  </div>');
             printWindow.document.write('  <div class="label-right">');
             printWindow.document.write('    <div>');
-            printWindow.document.write('      <div class="brand-title">HSE SYSTEM</div>');
+            printWindow.document.write('      <div class="brand-title">{{ config("app.name", "HSE SYSTEM") }}</div>');
             printWindow.document.write('      <h3 class="asset-name">' + name + '</h3>');
             printWindow.document.write('      <div class="asset-meta">' + categoryName + ' • ' + locationName + '</div>');
             printWindow.document.write('    </div>');
             printWindow.document.write('    <div class="label-footer">');
             printWindow.document.write('      <div class="asset-code-badge">' + code + '</div>');
-            printWindow.document.write('      <div class="footer-text">PROPERTY OF HSE</div>');
+            printWindow.document.write('      <div class="footer-text">PROPERTY OF {{ strtoupper(config("app.name", "HSE")) }}</div>');
             printWindow.document.write('    </div>');
             printWindow.document.write('  </div>');
             printWindow.document.write('</div>');
