@@ -411,6 +411,12 @@
         color: #ffffff !important;
         text-shadow: none !important;
     }
+    
+    /* Active menu icon overrides to ensure perfect contrast and premium readability */
+    .list-group-item.active i {
+        color: #ffffff !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
+    }
 </style>
 
 <div id="sidebar-wrapper" class="sidebar-theme-{{ $theme }}">
@@ -429,26 +435,26 @@
     
     <div class="list-group">
         <a class="list-group-item {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-            <i class="bi bi-grid-1x2"></i> <span>Dashboard</span>
+            <i class="bi bi-grid-1x2" style="color: #38bdf8;"></i> <span>Dashboard</span>
         </a>
         
         <div class="sidebar-section-header">Assets & Items</div>
         
         <a class="list-group-item {{ request()->routeIs('assets.*') ? 'active' : '' }}" href="{{ route('assets.index') }}">
-            <i class="bi bi-box-seam"></i> <span>Fixed Assets</span>
+            <i class="bi bi-box-seam" style="color: #f87171;"></i> <span>Fixed Assets</span>
         </a>
         
         <a class="list-group-item d-flex justify-content-between align-items-center {{ request()->routeIs('consumables.*') ? 'active' : '' }}" 
            href="#consumablesSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('consumables.*') ? 'true' : 'false' }}">
             <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-basket"></i> <span>Consumables</span>
+                <i class="bi bi-basket" style="color: #4ade80;"></i> <span>Consumables</span>
             </div>
             <i class="bi bi-chevron-down small collapse-arrow"></i>
         </a>
         <div class="collapse {{ request()->routeIs('consumables.*') ? 'show' : '' }}" id="consumablesSubmenu">
             <div class="sidebar-submenu">
                 <a class="list-group-item border-0 py-2 {{ request()->routeIs('consumables.index') ? 'active' : '' }}" href="{{ route('consumables.index') }}">
-                    <i class="bi bi-circle-fill" style="font-size: 6px;"></i> Stock Consumables
+                    <i class="bi bi-circle-fill" style="font-size: 6px; color: #4ade80;"></i> Stock Consumables
                 </a>
                 <a class="list-group-item border-0 py-2 {{ request()->routeIs('consumables.transactions.in') ? 'active' : '' }}" href="{{ route('consumables.transactions.in') }}">
                     <i class="bi bi-box-arrow-in-down text-success"></i> Barang Masuk
@@ -460,35 +466,35 @@
         </div>
 
         <a class="list-group-item {{ request()->routeIs('stock-opnames.*') ? 'active' : '' }}" href="{{ route('stock-opnames.index') }}">
-            <i class="bi bi-clipboard-data text-warning"></i> <span>Stock Opname</span>
+            <i class="bi bi-clipboard-data" style="color: #fbbf24;"></i> <span>Stock Opname</span>
         </a>
 
         <div class="sidebar-section-header">Master Data</div>
         
         <a class="list-group-item {{ request()->routeIs('categories.*') ? 'active' : '' }}" href="{{ route('categories.index') }}">
-            <i class="bi bi-tags"></i> <span>Categories</span>
+            <i class="bi bi-tags" style="color: #818cf8;"></i> <span>Categories</span>
         </a>
         <a class="list-group-item {{ request()->routeIs('locations.*') ? 'active' : '' }}" href="{{ route('locations.index') }}">
-            <i class="bi bi-geo-alt"></i> <span>Locations</span>
+            <i class="bi bi-geo-alt" style="color: #fb7185;"></i> <span>Locations</span>
         </a>
         <a class="list-group-item {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
-            <i class="bi bi-truck"></i> <span>Suppliers</span>
+            <i class="bi bi-truck" style="color: #2dd4bf;"></i> <span>Suppliers</span>
         </a>
 
         @role('admin')
         <div class="sidebar-section-header">Administration</div>
         
         <a class="list-group-item {{ request()->routeIs('admin.configs.*') ? 'active' : '' }}" href="{{ route('admin.configs.index') }}">
-            <i class="bi bi-gear"></i> <span>Config Master</span>
+            <i class="bi bi-gear" style="color: #a78bfa;"></i> <span>Config Master</span>
         </a>
         <a class="list-group-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
-            <i class="bi bi-people"></i> <span>Users</span>
+            <i class="bi bi-people" style="color: #60a5fa;"></i> <span>Users</span>
         </a>
         <a class="list-group-item {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}">
-            <i class="bi bi-shield-lock"></i> <span>Roles</span>
+            <i class="bi bi-shield-lock" style="color: #fca5a5;"></i> <span>Roles</span>
         </a>
         <a class="list-group-item {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}" href="{{ route('admin.logs.index') }}">
-            <i class="bi bi-clock-history"></i> <span>Activity Logs</span>
+            <i class="bi bi-clock-history" style="color: #94a3b8;"></i> <span>Activity Logs</span>
         </a>
         @endrole
     </div>
