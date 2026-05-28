@@ -318,10 +318,14 @@
                     $('#scannerModal').modal('hide');
                 },
                 (errorMessage) => {}
-            ).then(() => {
+            }).then(() => {
                 $('#scanner-status').html('<span class="text-success fw-bold"><i class="bi bi-circle-fill text-success animate-pulse me-1"></i> Scanner Active. Point at an asset barcode.</span>');
             }).catch(err => {
-                $('#scanner-status').html('<span class="text-danger fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i> Camera Error: ' + err + '</span>');
+                let errorMsg = err;
+                if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                    errorMsg = "Kamera diblokir oleh browser karena menggunakan HTTP biasa. Silakan gunakan link HTTPS aman terowongan agar kamera aktif: <a href='" + window.location.href.replace('http://', 'https://') + "' class='text-decoration-underline text-danger fw-bold' target='_blank'>Buka via HTTPS</a>";
+                }
+                $('#scanner-status').html('<span class="text-danger fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i> Akses Kamera Gagal:<br><span class="small fw-normal text-muted d-block mt-1">' + errorMsg + '</span></span>');
             });
         });
 
