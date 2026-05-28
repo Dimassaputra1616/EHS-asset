@@ -460,7 +460,7 @@
         </div>
 
         <a class="list-group-item {{ request()->routeIs('stock-opnames.*') ? 'active' : '' }}" href="{{ route('stock-opnames.index') }}">
-            <i class="bi bi-clipboard2-check text-warning"></i> <span>Stock Opname</span>
+            <i class="bi bi-clipboard-data text-warning"></i> <span>Stock Opname</span>
         </a>
 
         <div class="sidebar-section-header">Master Data</div>
