@@ -2323,7 +2323,6 @@ div.dataTables_wrapper div.dataTables_processing {
                 0 1px 3px rgba(0, 0, 0, 0.02),
                 inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
     z-index: 1050 !important;
-    display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 0.65rem !important;
@@ -2335,6 +2334,11 @@ div.dataTables_wrapper div.dataTables_processing {
     animation: processingEntrance 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
     text-shadow: none !important;
     padding: 0 !important;
+}
+
+/* Conditionally apply flex only when DataTable show/hide mechanism does not hide it */
+div.dataTables_wrapper div.dataTables_processing:not([style*="display: none"]):not([style*="display:none"]) {
+    display: flex !important;
 }
 
 /* Hide default library blue bouncing dots */

@@ -284,12 +284,21 @@
                 const overlay = document.getElementById("sidebarOverlay");
                 
                 if(toggleBtn && wrapper && overlay) {
+                    // Check localStorage to persist the collapsed sidebar state across page loads
+                    const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                    if (isCollapsed && window.innerWidth >= 992) {
+                        wrapper.classList.add("toggled");
+                    }
+
                     toggleBtn.addEventListener("click", function(e) {
                         e.preventDefault();
                         wrapper.classList.toggle("toggled");
                         if (window.innerWidth < 992) {
                             overlay.classList.toggle("active");
                             document.body.classList.toggle("sidebar-open");
+                        } else {
+                            // Persist the state in localStorage for desktop screen sizes
+                            localStorage.setItem('sidebar-collapsed', wrapper.classList.contains('toggled'));
                         }
                     });
                     
