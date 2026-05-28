@@ -275,18 +275,25 @@
             html5QrcodeScanner = new Html5Qrcode("reader");
             
             const config = { 
-                fps: 10, 
+                fps: 30, // 3x higher frame rate for split-second captures
                 qrbox: function(width, height) {
                     return {
-                        width: Math.floor(width * 0.75),
-                        height: 150
+                        width: Math.floor(width * 0.85), // Widen scan frame for horizontal 1D barcodes
+                        height: Math.floor(height * 0.6)
                     };
                 },
-                aspectRatio: 1.0
+                aspectRatio: 1.333333,
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true // Activate browser native hardware accelerated scanning engine
+                }
             };
             
             html5QrcodeScanner.start(
-                { facingMode: "environment" },
+                { 
+                    facingMode: "environment",
+                    width: { min: 640, ideal: 1280 }, // Request high-resolution frame for sharp line scanning
+                    height: { min: 480, ideal: 720 }
+                },
                 config,
                 (decodedText, decodedResult) => {
                     if (decodedText === lastResult) return;
