@@ -54,6 +54,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('locations', LocationController::class);
     Route::resource('suppliers', SupplierController::class);
 
+    // Staff Request & Reporting Portals (Any authenticated employee/staff)
+    Route::prefix('staff')->name('staff.')->group(function () {
+        // Asset Requests
+        Route::get('/requests', [\App\Http\Controllers\Staff\AssetRequestController::class, 'index'])->name('requests.index');
+        Route::get('/requests/create', [\App\Http\Controllers\Staff\AssetRequestController::class, 'create'])->name('requests.create');
+        Route::post('/requests', [\App\Http\Controllers\Staff\AssetRequestController::class, 'store'])->name('requests.store');
+
+        // Damage/Incident Reports
+        Route::get('/damage-reports', [\App\Http\Controllers\Staff\DamageReportController::class, 'index'])->name('damage_reports.index');
+        Route::get('/damage-reports/create', [\App\Http\Controllers\Staff\DamageReportController::class, 'create'])->name('damage_reports.create');
+        Route::post('/damage-reports', [\App\Http\Controllers\Staff\DamageReportController::class, 'store'])->name('damage_reports.store');
+    });
+
     // Administration (Admin only)
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/configs', [AppConfigController::class, 'index'])->name('configs.index');
@@ -68,6 +81,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('logs.index');
         Route::delete('/logs/clear', [\App\Http\Controllers\Admin\ActivityLogController::class, 'clearAll'])->name('logs.clear');
         Route::delete('/logs/{id}', [\App\Http\Controllers\Admin\ActivityLogController::class, 'destroy'])->name('logs.destroy');
+
+        // Manage Asset Requests
+        Route::get('/requests', [\App\Http\Controllers\Admin\ManageRequestController::class, 'index'])->name('requests.index');
+        Route::put('/requests/{id}/status', [\App\Http\Controllers\Admin\ManageRequestController::class, 'updateStatus'])->name('requests.update-status');
+
+        // Manage Damage Reports
+        Route::get('/damage-reports', [\App\Http\Controllers\Admin\ManageDamageReportController::class, 'index'])->name('damage_reports.index');
+        Route::put('/damage-reports/{id}/status', [\App\Http\Controllers\Admin\ManageDamageReportController::class, 'updateStatus'])->name('damage_reports.update-status');
     });
 });
 

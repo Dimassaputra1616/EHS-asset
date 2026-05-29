@@ -438,6 +438,7 @@
             <i class="bi bi-grid-1x2" style="color: #38bdf8;"></i> <span>Dashboard</span>
         </a>
         
+        @role('admin')
         <div class="sidebar-section-header">Assets & Items</div>
         
         <a class="list-group-item {{ request()->routeIs('assets.*') ? 'active' : '' }}" href="{{ route('assets.index') }}">
@@ -481,7 +482,14 @@
             <i class="bi bi-truck" style="color: #2dd4bf;"></i> <span>Suppliers</span>
         </a>
 
-        @role('admin')
+        <div class="sidebar-section-header">EHS Management</div>
+        <a class="list-group-item {{ request()->routeIs('admin.requests.*') ? 'active' : '' }}" href="{{ route('admin.requests.index') }}">
+            <i class="bi bi-card-checklist" style="color: #fda4af;"></i> <span>Manage Requests</span>
+        </a>
+        <a class="list-group-item {{ request()->routeIs('admin.damage_reports.*') ? 'active' : '' }}" href="{{ route('admin.damage_reports.index') }}">
+            <i class="bi bi-shield-exclamation" style="color: #fb7185;"></i> <span>Manage Damage Reports</span>
+        </a>
+
         <div class="sidebar-section-header">Administration</div>
         
         <a class="list-group-item {{ request()->routeIs('admin.configs.*') ? 'active' : '' }}" href="{{ route('admin.configs.index') }}">
@@ -495,6 +503,16 @@
         </a>
         <a class="list-group-item {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}" href="{{ route('admin.logs.index') }}">
             <i class="bi bi-clock-history" style="color: #94a3b8;"></i> <span>Activity Logs</span>
+        </a>
+        @else
+        <div class="sidebar-section-header">EHS Request Portals</div>
+        
+        <a class="list-group-item {{ request()->routeIs('staff.requests.*') ? 'active' : '' }}" href="{{ route('staff.requests.index') }}">
+            <i class="bi bi-patch-question" style="color: #38bdf8;"></i> <span>Pinjam Alat & APD</span>
+        </a>
+        
+        <a class="list-group-item {{ request()->routeIs('staff.damage_reports.*') ? 'active' : '' }}" href="{{ route('staff.damage_reports.index') }}">
+            <i class="bi bi-shield-fill-exclamation" style="color: #f87171;"></i> <span>Lapor Kerusakan Alat</span>
         </a>
         @endrole
     </div>
