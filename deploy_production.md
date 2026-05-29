@@ -1,6 +1,6 @@
-# 🚀 Panduan Deploy Aplikasi EHS-Asset ke Ubuntu Server (Production)
+# 🚀 Panduan Deploy Aplikasi EHS-Asset ke Ubuntu Server dengan PostgreSQL (Production)
 
-Panduan ini membahas langkah-demi-langkah instalasi, konfigurasi, pengamanan, dan optimasi aplikasi **HSE Asset Management (Laravel)** pada server **Ubuntu (22.04 LTS / 24.04 LTS)** dari nol hingga siap digunakan untuk production dengan performa tinggi dan aman.
+Panduan ini membahas langkah-demi-langkah instalasi, konfigurasi, pengamanan, dan optimasi aplikasi **HSE Asset Management (Laravel)** pada server **Ubuntu (22.04 LTS / 24.04 LTS)** menggunakan database **PostgreSQL** dari nol hingga siap digunakan untuk production dengan performa tinggi dan aman.
 
 ---
 
@@ -29,9 +29,9 @@ sudo ufw enable
 
 ---
 
-## 🐘 Langkah 2: Instalasi PHP 8.3 & Ekstensi yang Dibutuhkan
+## 🐘 Langkah 2: Instalasi PHP 8.3 & Ekstensi PostgreSQL yang Dibutuhkan
 
-Aplikasi Laravel membutuhkan PHP beserta beberapa ekstensi spesifik untuk pengolahan database, kompresi zip, manipulasi gambar, dan kalkulasi presisi tinggi.
+Aplikasi Laravel membutuhkan PHP beserta beberapa ekstensi spesifik untuk pengolahan database PostgreSQL, kompresi zip, manipulasi gambar, dan kalkulasi presisi tinggi.
 
 ```bash
 # Tambahkan PPA PHP Ondřej Surý (selalu mendapatkan PHP versi terbaru dan stabil)
@@ -39,8 +39,8 @@ sudo apt install -y software-properties-common
 sudo add-apt-repository ppa:ondrej/php -y
 sudo apt update
 
-# Instal PHP 8.3, PHP-FPM, dan modul pendukung
-sudo apt install -y php8.3 php8.3-fpm php8.3-mysql php8.3-mbstring php8.3-xml \
+# Instal PHP 8.3, PHP-FPM, dan modul pendukung (menggunakan pgsql sebagai driver)
+sudo apt install -y php8.3 php8.3-fpm php8.3-pgsql php8.3-mbstring php8.3-xml \
 php8.3-curl php8.3-zip php8.3-gd php8.3-bcmath php8.3-intl php8.3-cli unzip git
 
 # Pastikan PHP-FPM berjalan aktif
@@ -49,29 +49,38 @@ sudo systemctl status php8.3-fpm
 
 ---
 
-## 🗄️ Langkah 3: Instalasi & Konfigurasi MySQL Database Server
+## 🗄️ Langkah 3: Instalasi & Konfigurasi PostgreSQL Database Server
 
 ```bash
-# Instal MySQL Server
-sudo apt install mysql-server -y
+# Instal PostgreSQL Server beserta modul pendukungnya
+sudo apt install postgresql postgresql-contrib -y
 
-# Jalankan skrip keamanan bawaan MySQL
-sudo mysql_secure_installation
+# Pastikan PostgreSQL berjalan aktif dan otomatis menyala saat server reboot
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
 ```
-*(Ikuti petunjuk di layar: Aktifkan validasi password jika perlu, hapus anonymous user, matikan remote login root, dan hapus test database).*
 
 ### Membuat Database dan User untuk HSE Asset:
-Masuk ke terminal MySQL:
+Masuk ke terminal PostgreSQL menggunakan user sistem bawaan `postgres`:
 ```bash
-sudo mysql -u root -p
+sudo -i -u postgres psql
 ```
-Jalankan query SQL berikut di dalam shell MySQL untuk membuat database terpisah:
+Jalankan perintah SQL berikut di dalam shell psql untuk membuat database dan user:
 ```sql
-CREATE DATABASE hse_asset CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'hse_user'@'localhost' IDENTIFIED BY 'PasswordSangatKuat123!';
-GRANT ALL PRIVILEGES ON hse_asset.* TO 'hse_user'@'localhost';
-FLUSH PRIVILEGES;
-EXIT;
+-- Membuat Database hse_asset
+CREATE DATABASE hse_asset;
+
+-- Membuat User baru dengan password yang kuat
+CREATE USER hse_user WITH PASSWORD 'PasswordSangatKuat123!';
+
+-- Memberikan hak akses penuh ke user baru pada database hse_asset
+GRANT ALL PRIVILEGES ON DATABASE hse_asset TO hse_user;
+
+-- Mengubah hak kepemilikan database (owner) menjadi hse_user
+ALTER DATABASE hse_asset OWNER TO hse_user;
+
+-- Keluar dari PostgreSQL CLI
+\q
 ```
 
 ---
@@ -101,7 +110,6 @@ sudo chown -R $USER:$USER /var/www/html/hse-asset
 
 # Clone repositori git Anda ke direktori tersebut
 git clone https://github.com/USERNAME/REPO-NAME.git /var/www/html/hse-asset
-# atau salin source code lokal Anda jika dideploy manual.
 
 cd /var/www/html/hse-asset
 ```
@@ -112,16 +120,17 @@ Salin berkas contoh `.env` dan sesuaikan nilainya:
 cp .env.example .env
 nano .env
 ```
-Sesuaikan konfigurasi penting berikut untuk **Production**:
+Sesuaikan konfigurasi penting berikut untuk **Production** dengan driver **pgsql**:
 ```ini
 APP_NAME="HSE Asset Management"
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://safety.perusahaan.com
 
-DB_CONNECTION=mysql
+# PostgreSQL Connection Configuration
+DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
-DB_PORT=3306
+DB_PORT=5432
 DB_DATABASE=hse_asset
 DB_USERNAME=hse_user
 DB_PASSWORD=PasswordSangatKuat123!
@@ -259,7 +268,7 @@ sudo apt install certbot python3-certbot-nginx -y
 # Request sertifikat SSL gratis untuk domain Anda
 sudo certbot --nginx -d safety.perusahaan.com
 ```
-*(Certbot akan meminta email Anda dan menanyakan apakah Anda ingin mengarahkan semua lalu lintas HTTP ke HTTPS secara otomatis. **Pilih Opsi 2 (Redirect)**).*
+*(Certbot akan meminta email Anda and menanyakan apakah Anda ingin mengarahkan semua lalu lintas HTTP ke HTTPS secara otomatis. **Pilih Opsi 2 (Redirect)**).*
 
 ---
 
@@ -396,4 +405,4 @@ Untuk melakukan deploy di kemudian hari, Anda cukup menjalankan:
 ---
 
 ## 🎉 Selesai!
-Aplikasi **HSE Asset Management** Anda sekarang telah berjalan dengan **SSL HTTPS aktif**, **Nginx teroptimasi**, **scheduler otomatis**, dan **database terisolasi** secara aman di server Ubuntu Anda! 🚀
+Aplikasi **HSE Asset Management** Anda sekarang telah berjalan dengan **SSL HTTPS aktif**, **Nginx teroptimasi**, **scheduler otomatis**, dan **database terisolasi PostgreSQL** secara aman di server Ubuntu Anda! 🚀
