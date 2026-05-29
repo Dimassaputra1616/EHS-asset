@@ -535,9 +535,9 @@
                             // Prefilled damage link
                             const dmgBtn = document.getElementById('sac-btn-damage');
                             if (type === 'fixed_asset') {
-                                dmgBtn.href = `/staff/damage_reports/create?item_type=fixed_asset&asset_id=${item.id}`;
+                                dmgBtn.href = `/staff/damage-reports/create?item_type=fixed_asset&asset_id=${item.id}`;
                             } else {
-                                dmgBtn.href = `/staff/damage_reports/create?item_type=consumable&consumable_id=${item.id}`;
+                                dmgBtn.href = `/staff/damage-reports/create?item_type=consumable&consumable_id=${item.id}`;
                             }
 
                             // Quick Admin update form
