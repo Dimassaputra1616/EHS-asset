@@ -30,6 +30,74 @@
     .modal-backdrop.show {
         opacity: 1 !important;
     }
+
+    /* Premium Modern Stats Cards */
+    .stat-card {
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.7) !important;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+        box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.04), 0 4px 12px -2px rgba(15, 23, 42, 0.02) !important;
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        overflow: hidden;
+        min-height: 110px;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -5px rgba(15, 23, 42, 0.08), 0 8px 20px -2px rgba(15, 23, 42, 0.04) !important;
+    }
+    
+    /* Dynamic Background Lights inside Cards */
+    .stat-light {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        top: -60px;
+        right: -60px;
+        opacity: 0.12;
+        filter: blur(40px);
+        transition: all 0.5s ease;
+        pointer-events: none;
+    }
+    .stat-card:hover .stat-light {
+        opacity: 0.22;
+        transform: scale(1.15);
+    }
+    
+    .light-primary { background: #0d6efd; }
+    .light-success { background: #198754; }
+    .light-danger { background: #dc3545; }
+    
+    /* Glowing floating icons */
+    .stat-icon-wrapper {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .stat-card:hover .stat-icon-wrapper {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    /* Darker premium title texts */
+    .stat-title {
+        color: #64748b;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    
+    .stat-value {
+        color: #0f172a;
+        font-size: 1.75rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
 </style>
 @endpush
 
@@ -38,14 +106,15 @@
 <div class="row g-3 mb-4 animate-fade-in">
     <!-- Card 1: Total Audits -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 position-relative" style="background: #ffffff; min-height: 110px;">
+        <div class="card stat-card h-100 position-relative">
+            <div class="stat-light light-primary"></div>
             <div class="card-body p-4 d-flex align-items-center">
-                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary" style="width: 54px; height: 54px;">
-                    <i class="bi bi-clipboard2-check fs-3"></i>
+                <div class="stat-icon-wrapper bg-primary bg-opacity-10 text-primary">
+                    <i class="bi bi-clipboard2-check"></i>
                 </div>
                 <div class="ms-3">
-                    <span class="text-muted fw-semibold small d-block">Total Audit</span>
-                    <h3 class="mb-0 fw-bold mt-1 text-dark">{{ $totalAudits }}</h3>
+                    <span class="stat-title d-block">Total Audit</span>
+                    <h3 class="mb-0 stat-value mt-1">{{ $totalAudits }}</h3>
                 </div>
             </div>
         </div>
@@ -53,14 +122,15 @@
 
     <!-- Card 2: Match Audits -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 position-relative" style="background: #ffffff; min-height: 110px;">
+        <div class="card stat-card h-100 position-relative">
+            <div class="stat-light light-success"></div>
             <div class="card-body p-4 d-flex align-items-center">
-                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success" style="width: 54px; height: 54px;">
-                    <i class="bi bi-check-circle fs-3"></i>
+                <div class="stat-icon-wrapper bg-success bg-opacity-10 text-success">
+                    <i class="bi bi-check-circle"></i>
                 </div>
                 <div class="ms-3">
-                    <span class="text-muted fw-semibold small d-block">Sesuai (Match)</span>
-                    <h3 class="mb-0 fw-bold mt-1 text-dark">{{ $matchAudits }}</h3>
+                    <span class="stat-title d-block">Sesuai (Match)</span>
+                    <h3 class="mb-0 stat-value mt-1">{{ $matchAudits }}</h3>
                 </div>
             </div>
         </div>
@@ -68,14 +138,15 @@
 
     <!-- Card 3: Discrepancy Audits -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 position-relative" style="background: #ffffff; min-height: 110px;">
+        <div class="card stat-card h-100 position-relative">
+            <div class="stat-light light-danger"></div>
             <div class="card-body p-4 d-flex align-items-center">
-                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger" style="width: 54px; height: 54px;">
-                    <i class="bi bi-exclamation-triangle fs-3"></i>
+                <div class="stat-icon-wrapper bg-danger bg-opacity-10 text-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
                 </div>
                 <div class="ms-3">
-                    <span class="text-muted fw-semibold small d-block">Selisih (Discrepancy)</span>
-                    <h3 class="mb-0 fw-bold mt-1 text-dark">{{ $discrepancyAudits }}</h3>
+                    <span class="stat-title d-block">Selisih (Discrepancy)</span>
+                    <h3 class="mb-0 stat-value mt-1">{{ $discrepancyAudits }}</h3>
                 </div>
             </div>
         </div>
@@ -83,14 +154,15 @@
 
     <!-- Card 4: Net Adjustment -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 position-relative" style="background: #ffffff; min-height: 110px;">
+        <div class="card stat-card h-100 position-relative">
+            <div class="stat-light {{ $netAdjustment >= 0 ? 'light-success' : 'light-danger' }}"></div>
             <div class="card-body p-4 d-flex align-items-center">
-                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center {{ $netAdjustment >= 0 ? 'bg-success' : 'bg-danger' }} bg-opacity-10 {{ $netAdjustment >= 0 ? 'text-success' : 'text-danger' }}" style="width: 54px; height: 54px;">
-                    <i class="bi {{ $netAdjustment >= 0 ? 'bi-graph-up' : 'bi-graph-down' }} fs-3"></i>
+                <div class="stat-icon-wrapper {{ $netAdjustment >= 0 ? 'bg-success' : 'bg-danger' }} bg-opacity-10 {{ $netAdjustment >= 0 ? 'text-success' : 'text-danger' }}">
+                    <i class="bi {{ $netAdjustment >= 0 ? 'bi-graph-up' : 'bi-graph-down' }}"></i>
                 </div>
                 <div class="ms-3">
-                    <span class="text-muted fw-semibold small d-block">Penyesuaian Bersih</span>
-                    <h3 class="mb-0 fw-bold mt-1 text-dark">{{ $netAdjustment >= 0 ? '+' : '' }}{{ $netAdjustment }} Unit</h3>
+                    <span class="stat-title d-block">Penyesuaian Bersih</span>
+                    <h3 class="mb-0 stat-value mt-1">{{ $netAdjustment >= 0 ? '+' : '' }}{{ $netAdjustment }} Unit</h3>
                 </div>
             </div>
         </div>
