@@ -39,11 +39,13 @@ sudo apt install -y software-properties-common
 sudo add-apt-repository ppa:ondrej/php -y
 sudo apt update
 
-# Instal PHP 8.3, PHP-FPM, dan modul pendukung (menggunakan pgsql sebagai driver)
-sudo apt install -y php8.3 php8.3-fpm php8.3-pgsql php8.3-mbstring php8.3-xml \
+# Instal Nginx, PHP 8.3, PHP-FPM, dan modul pendukung (menggunakan pgsql sebagai driver)
+sudo apt install -y nginx php8.3 php8.3-fpm php8.3-pgsql php8.3-mbstring php8.3-xml \
 php8.3-curl php8.3-zip php8.3-gd php8.3-bcmath php8.3-intl php8.3-cli unzip git
 
-# Pastikan PHP-FPM berjalan aktif
+# Pastikan Nginx dan PHP-FPM berjalan aktif
+sudo systemctl start nginx
+sudo systemctl enable nginx
 sudo systemctl status php8.3-fpm
 ```
 
