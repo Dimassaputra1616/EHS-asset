@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // API Services (Search & Notifications remain globally available to auth users)
     Route::get('api/notifications', [AssetController::class, 'getNotifications'])->name('api.notifications');
     Route::get('api/search', [AssetController::class, 'globalSearch'])->name('api.search');
+    Route::get('api/assets/by-code/{code}', [AssetController::class, 'getByCode'])->name('api.assets.by-code');
 
     // Admin & Inspector Only Resource Routes (Protected by role:admin)
     Route::middleware('role:admin')->group(function () {

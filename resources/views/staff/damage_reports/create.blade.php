@@ -277,6 +277,26 @@
 
         // Initialize state
         $('#asset_id').prop('required', true);
+
+        // Auto select based on URL params (e.g. ?item_type=fixed_asset&asset_id=12)
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemType = urlParams.get('item_type');
+        const assetId = urlParams.get('asset_id');
+        const consumableId = urlParams.get('consumable_id');
+
+        if (itemType === 'consumable' || consumableId) {
+            $('#tab-consumable').click();
+            if (consumableId) {
+                $('#consumable_id').val(consumableId);
+            }
+        } else if (itemType === 'other') {
+            $('#tab-other').click();
+        } else if (itemType === 'fixed_asset' || assetId) {
+            $('#tab-fixed').click();
+            if (assetId) {
+                $('#asset_id').val(assetId);
+            }
+        }
     });
 </script>
 @endsection

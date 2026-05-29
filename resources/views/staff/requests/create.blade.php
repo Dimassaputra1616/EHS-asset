@@ -147,6 +147,24 @@
 
         // Initialize state
         $('#asset_id').prop('required', true);
+
+        // Auto select based on URL params (e.g. ?request_type=fixed_asset&asset_id=12)
+        const urlParams = new URLSearchParams(window.location.search);
+        const reqType = urlParams.get('request_type');
+        const assetId = urlParams.get('asset_id');
+        const consumableId = urlParams.get('consumable_id');
+
+        if (reqType === 'consumable' || consumableId) {
+            $('#option-consumable').click();
+            if (consumableId) {
+                $('#consumable_id').val(consumableId);
+            }
+        } else if (reqType === 'fixed_asset' || assetId) {
+            $('#option-fixed-asset').click();
+            if (assetId) {
+                $('#asset_id').val(assetId);
+            }
+        }
     });
 </script>
 @endsection

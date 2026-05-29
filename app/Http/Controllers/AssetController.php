@@ -83,6 +83,20 @@ class AssetController extends Controller
 
     public function update(Request $request, Asset $asset)
     {
+        if ($request->has('quick_update')) {
+            $request->validate([
+                'status' => 'required|string',
+                'assigned_to' => 'nullable|string|max:255',
+            ]);
+            $asset->update($request->only(['status', 'assigned_to']));
+            \App\Helpers\ActivityLogger::log('Quick Update Asset', "Asset {$asset->name} ({$asset->code}) status updated to {$asset->status} (Holder: " . ($asset->assigned_to ?? '-') . ").");
+            
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Status aset berhasil diperbarui!']);
+            }
+            return redirect()->back()->with('success', 'Status aset berhasil diperbarui!');
+        }
+
         $request->validate([
             'code' => 'required|string|max:255|unique:assets,code,'.$asset->id,
             'name' => 'required|string|max:255',
@@ -320,5 +334,33 @@ class AssetController extends Controller
         return response()->json([
             'results' => $results
         ]);
+    }
+
+    public function getByCode($code)
+    {
+        // Try to find in Fixed Assets
+        $asset = \App\Models\Asset::with(['category', 'location', 'supplier'])->where('code', $code)->first();
+        if ($asset) {
+            return response()->json([
+                'found' => true,
+                'type' => 'fixed_asset',
+                'data' => $asset
+            ]);
+        }
+
+        // Try to find in Consumables
+        $consumable = \App\Models\Consumable::with(['category'])->where('code', $code)->first();
+        if ($consumable) {
+            return response()->json([
+                'found' => true,
+                'type' => 'consumable',
+                'data' => $consumable
+            ]);
+        }
+
+        return response()->json([
+            'found' => false,
+            'message' => 'Alat keselamatan atau APD tidak ditemukan dengan barcode: ' . $code
+        ], 404);
     }
 }

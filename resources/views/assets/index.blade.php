@@ -348,6 +348,14 @@
                     Swal.fire('Error', 'Failed to load asset details.', 'error');
                 });
         }
+        window.showAssetDetails = showAssetDetails;
+
+        // Auto-open detail modal if view_id query parameter is present (redirected from scanner)
+        const urlParams = new URLSearchParams(window.location.search);
+        const viewId = urlParams.get('view_id');
+        if (viewId) {
+            showAssetDetails(viewId);
+        }
 
         // Scanner Logic
         $('#scannerModal').on('shown.bs.modal', function () {
@@ -382,51 +390,12 @@
                     if (decodedText === lastResult) return;
                     lastResult = decodedText;
                     
-                    try {
-                        let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-84.wav');
-                        audio.volume = 0.5;
-                        audio.play().catch(e => {});
-                    } catch (e) {
-                        console.error('Audio cue error:', e);
-                    }
-
                     // Hide scanner immediately
                     $('#scannerModal').modal('hide');
 
-                    // Filter table list
-                    let table = $('#assets-table').DataTable();
-                    table.search(decodedText).draw();
-                    
-                    $('.dataTables_filter input').addClass('border-danger').css('box-shadow', '0 0 0 4px rgba(192, 57, 43, 0.2)');
-                    setTimeout(() => {
-                        $('.dataTables_filter input').removeClass('border-danger').css('box-shadow', 'none');
-                    }, 1500);
-
-                    // Client-side quick row lookup for instant detail presentation!
-                    let assetId = null;
-                    table.rows().every(function() {
-                        let rowData = this.data();
-                        if (rowData.code === decodedText || rowData.name === decodedText) {
-                            assetId = rowData.id;
-                            return false; // Break loop
-                        }
-                    });
-
-                    if (assetId) {
-                        showAssetDetails(assetId);
-                    } else {
-                        // Fallback: search backend for matching code if not on current datatable page
-                        fetch('/api/search?q=' + encodeURIComponent(decodedText))
-                            .then(res => res.json())
-                            .then(data => {
-                                // Redraw table, wait, then trigger view
-                                setTimeout(() => {
-                                    let firstRow = table.row(0).data();
-                                    if (firstRow) {
-                                        showAssetDetails(firstRow.id);
-                                    }
-                                }, 500);
-                            });
+                    // Call global handleScannedBarcode to open unified Scan Action Center
+                    if (typeof handleScannedBarcode === 'function') {
+                        handleScannedBarcode(decodedText);
                     }
                 },
                 (errorMessage) => {}

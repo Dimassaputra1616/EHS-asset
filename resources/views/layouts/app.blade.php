@@ -155,6 +155,147 @@
         </div>
     </div>
 
+    <!-- Global Scan Action Center Modal -->
+    <div class="modal fade" id="scanActionCenterModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden; background: #0f172a; color: #f8fafc;">
+                <div class="modal-header border-0 py-3 px-4" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-bottom: 1px solid rgba(255,255,255,0.06) !important;">
+                    <h6 class="modal-title fw-bold text-white mb-0 d-flex align-items-center">
+                        <span class="p-1.5 bg-danger bg-opacity-10 rounded-3 me-2 border border-danger border-opacity-20">
+                            <i class="bi bi-qr-code-scan text-danger"></i>
+                        </span>
+                        Scan Action Center
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Item Display Card (Glassmorphic) -->
+                    <div class="p-3 mb-4 rounded-4 position-relative overflow-hidden" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-15 rounded-3 border border-danger border-opacity-10" style="width: 56px; height: 56px; flex-shrink: 0;" id="sac-item-icon-box">
+                                <i class="bi bi-box-seam text-danger fs-3" id="sac-item-icon"></i>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <span class="badge bg-secondary bg-opacity-25 text-light mb-1 text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;" id="sac-item-type">Fixed Asset</span>
+                                <h5 class="fw-bold text-white mb-1 text-truncate" id="sac-item-name">-</h5>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <span class="font-monospace text-danger small fw-semibold" id="sac-item-code">-</span>
+                                    <span class="text-white-50" id="sac-item-divider">•</span>
+                                    <span class="small text-white-50" id="sac-item-meta">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-20">
+                            <div class="d-flex gap-2">
+                                <span id="sac-item-status-badge"></span>
+                                <span id="sac-item-condition-badge"></span>
+                            </div>
+                            <div class="small fw-semibold text-white-50" id="sac-item-holder">
+                                <i class="bi bi-person me-1"></i>Holder: <span class="text-white" id="sac-item-holder-name">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Grid -->
+                    <div class="row g-3">
+                        <!-- View Details -->
+                        <div class="col-6">
+                            <button type="button" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-view" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;">
+                                <div class="p-2 bg-primary bg-opacity-15 rounded-3 mb-3 border border-primary border-opacity-10" style="width: fit-content;">
+                                    <i class="bi bi-eye-fill text-primary fs-5 d-block"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white small">Lihat Detail</div>
+                                    <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;">Rincian spesifikasi, biaya, dan vendor.</small>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <!-- Request Borrow / Claim -->
+                        <div class="col-6">
+                            <a href="#" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-request" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;">
+                                <div class="p-2 bg-success bg-opacity-15 rounded-3 mb-3 border border-success border-opacity-10" style="width: fit-content;">
+                                    <i class="bi bi-hand-index-thumb-fill text-success fs-5 d-block"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white small" id="sac-btn-request-title">Ajukan Pinjam</div>
+                                    <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;" id="sac-btn-request-desc">Buat form request pinjam/ambil APD.</small>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Report Damage -->
+                        <div class="col-6">
+                            <a href="#" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-damage" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;">
+                                <div class="p-2 bg-warning bg-opacity-15 rounded-3 mb-3 border border-warning border-opacity-10" style="width: fit-content;">
+                                    <i class="bi bi-exclamation-triangle-fill text-warning fs-5 d-block"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white small">Laporkan Rusak</div>
+                                    <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;">Kirim laporan kendala / temuan alat rusak.</small>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Admin Only: Quick Status Update -->
+                        @role('admin')
+                        <div class="col-6">
+                            <button type="button" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-quick-update" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;" data-bs-toggle="collapse" data-bs-target="#sac-admin-panel">
+                                <div class="p-2 bg-danger bg-opacity-15 rounded-3 mb-3 border border-danger border-opacity-10" style="width: fit-content;">
+                                    <i class="bi bi-sliders text-danger fs-5 d-block"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white small">Ubah Status</div>
+                                    <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;">Edit status/pemegang secara cepat.</small>
+                                </div>
+                            </button>
+                        </div>
+                        @else
+                        <div class="col-6">
+                            <div class="p-3 h-100 d-flex flex-column justify-content-center align-items-center rounded-4 border border-secondary border-opacity-10 text-center" style="background: rgba(255,255,255,0.01);">
+                                <i class="bi bi-shield-lock text-white-50 fs-3 mb-2 opacity-50"></i>
+                                <div class="fw-bold text-white-50 small" style="font-size: 0.75rem;">HSE Guard Portal</div>
+                            </div>
+                        </div>
+                        @endrole
+                    </div>
+
+                    <!-- Admin Quick Update Collapse Panel -->
+                    @role('admin')
+                    <div class="collapse mt-3" id="sac-admin-panel">
+                        <div class="p-3 rounded-4 border border-secondary border-opacity-20" style="background: rgba(255,255,255,0.02);">
+                            <h6 class="fw-bold text-white mb-3 small d-flex align-items-center gap-1">
+                                <i class="bi bi-sliders text-danger"></i> Quick Update Panel
+                            </h6>
+                            <form id="sac-quick-update-form" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="quick_update" value="1">
+                                <div class="mb-2">
+                                    <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Status Alat</label>
+                                    <select class="form-select bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="status" id="sac-input-status" style="font-size: 0.85rem;">
+                                        <option value="In Stock">In Stock</option>
+                                        <option value="In Use">In Use</option>
+                                        <option value="Maintenance">Maintenance</option>
+                                        <option value="Retired">Retired</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3" id="sac-holder-input-group">
+                                    <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Nama Pemegang (Holder)</label>
+                                    <input type="text" class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="assigned_to" id="sac-input-holder" placeholder="Kosongkan jika di Gudang" style="font-size: 0.85rem;">
+                                </div>
+                                <button type="submit" class="btn btn-danger w-100 fw-bold py-2 btn-sm rounded-3">
+                                    Simpan Perubahan
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @endrole
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- PWA More Menu Overlay (Mobile Only) -->
     <div class="pwa-more-overlay d-lg-none" id="pwaMoreOverlay"></div>
     <div class="pwa-more-menu d-lg-none" id="pwaMoreMenu">
@@ -278,6 +419,166 @@
         
         <!-- Sidebar Toggle Script -->
         <script>
+            // Unified Barcode Scanner Scan Action Center handler
+            window.handleScannedBarcode = function(decodedText) {
+                // 1. Play success audio cue
+                try {
+                    let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-84.wav');
+                    audio.volume = 0.5;
+                    audio.play().catch(() => {});
+                } catch (e) {}
+
+                // 2. Close active scanner modals
+                ['globalScannerModal', 'scannerModal'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        const modal = bootstrap.Modal.getInstance(el);
+                        if (modal) modal.hide();
+                    }
+                });
+
+                // 3. Fetch details
+                fetch(`/api/assets/by-code/${encodeURIComponent(decodedText)}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error('Not found');
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data.found) {
+                            const item = data.data;
+                            const type = data.type;
+
+                            // Populate Scan Action Center Modal
+                            document.getElementById('sac-item-name').innerText = item.name;
+                            document.getElementById('sac-item-code').innerText = item.code;
+                            document.getElementById('sac-item-type').innerText = type === 'fixed_asset' ? 'Fixed Asset' : 'Consumable (APD)';
+
+                            // Icon changes
+                            const iconBox = document.getElementById('sac-item-icon-box');
+                            const icon = document.getElementById('sac-item-icon');
+                            if (type === 'fixed_asset') {
+                                iconBox.className = 'd-flex align-items-center justify-content-center bg-danger bg-opacity-15 rounded-3 border border-danger border-opacity-10';
+                                icon.className = 'bi bi-box-seam text-danger fs-3';
+                            } else {
+                                iconBox.className = 'd-flex align-items-center justify-content-center bg-success bg-opacity-15 rounded-3 border border-success border-opacity-10';
+                                icon.className = 'bi bi-basket text-success fs-3';
+                            }
+
+                            // Meta location / stock
+                            if (type === 'fixed_asset') {
+                                document.getElementById('sac-item-meta').innerText = `Lokasi: ${item.location ? item.location.name : '-'}`;
+                                document.getElementById('sac-item-holder').style.display = 'block';
+                                document.getElementById('sac-item-holder-name').innerText = item.assigned_to ? item.assigned_to : '-';
+                            } else {
+                                document.getElementById('sac-item-meta').innerText = `Stok: ${item.stock} ${item.unit || 'pcs'}`;
+                                document.getElementById('sac-item-holder').style.display = 'none';
+                            }
+
+                            // Badges for status & condition
+                            const statusBadge = document.getElementById('sac-item-status-badge');
+                            const condBadge = document.getElementById('sac-item-condition-badge');
+                            
+                            statusBadge.innerHTML = '';
+                            condBadge.innerHTML = '';
+
+                            if (type === 'fixed_asset') {
+                                let statusClass = 'bg-secondary';
+                                if (item.status === 'In Stock') statusClass = 'bg-success bg-opacity-25 text-success border border-success border-opacity-20';
+                                if (item.status === 'In Use') statusClass = 'bg-primary bg-opacity-25 text-primary border border-primary border-opacity-20';
+                                if (item.status === 'Maintenance') statusClass = 'bg-warning bg-opacity-25 text-warning border border-warning border-opacity-20';
+                                if (item.status === 'Retired') statusClass = 'bg-danger bg-opacity-25 text-danger border border-danger border-opacity-20';
+                                
+                                statusBadge.innerHTML = `<span class="badge ${statusClass} text-uppercase fw-bold" style="font-size:0.68rem">${item.status}</span>`;
+
+                                let condClass = 'bg-secondary';
+                                if (item.condition === 'Good') condClass = 'bg-success text-white';
+                                if (item.condition === 'Damaged') condClass = 'bg-warning text-dark';
+                                if (item.condition === 'Broken') condClass = 'bg-danger text-white';
+                                condBadge.innerHTML = `<span class="badge ${condClass} text-uppercase fw-bold" style="font-size:0.68rem">${item.condition}</span>`;
+                            }
+
+                            // Button View logic
+                            const viewBtn = document.getElementById('sac-btn-view');
+                            if (type === 'fixed_asset') {
+                                viewBtn.style.display = 'flex';
+                                viewBtn.onclick = function() {
+                                    const sacModal = bootstrap.Modal.getInstance(document.getElementById('scanActionCenterModal'));
+                                    if (sacModal) sacModal.hide();
+                                    
+                                    // If we are on assets page, open detail modal directly!
+                                    if (typeof showAssetDetails === 'function') {
+                                        showAssetDetails(item.id);
+                                    } else {
+                                        // Redirect to assets page with direct parameter to open it
+                                        window.location.href = `/assets?view_id=${item.id}`;
+                                    }
+                                };
+                            } else {
+                                viewBtn.style.display = 'none';
+                            }
+
+                            // Prefilled request link
+                            const reqBtn = document.getElementById('sac-btn-request');
+                            const reqTitle = document.getElementById('sac-btn-request-title');
+                            const reqDesc = document.getElementById('sac-btn-request-desc');
+                            
+                            if (type === 'fixed_asset') {
+                                reqTitle.innerText = 'Ajukan Pinjam';
+                                reqDesc.innerText = 'Buat form request pinjam/mutasi alat.';
+                                reqBtn.href = `/staff/requests/create?request_type=fixed_asset&asset_id=${item.id}`;
+                            } else {
+                                reqTitle.innerText = 'Ambil APD';
+                                reqDesc.innerText = 'Buat form klaim barang APD habis pakai.';
+                                reqBtn.href = `/staff/requests/create?request_type=consumable&consumable_id=${item.id}`;
+                            }
+
+                            // Prefilled damage link
+                            const dmgBtn = document.getElementById('sac-btn-damage');
+                            if (type === 'fixed_asset') {
+                                dmgBtn.href = `/staff/damage_reports/create?item_type=fixed_asset&asset_id=${item.id}`;
+                            } else {
+                                dmgBtn.href = `/staff/damage_reports/create?item_type=consumable&consumable_id=${item.id}`;
+                            }
+
+                            // Quick Admin update form
+                            const adminPanel = document.getElementById('sac-admin-panel');
+                            if (adminPanel) {
+                                const form = document.getElementById('sac-quick-update-form');
+                                if (form) {
+                                    form.action = `/assets/${item.id}`;
+                                    document.getElementById('sac-input-status').value = item.status || 'In Stock';
+                                    document.getElementById('sac-input-holder').value = item.assigned_to || '';
+                                    
+                                    // Hide holder input if status is In Stock or Maintenance
+                                    const holderGroup = document.getElementById('sac-holder-input-group');
+                                    const statusSelect = document.getElementById('sac-input-status');
+                                    
+                                    function toggleHolderInput() {
+                                        if (statusSelect.value === 'In Stock' || statusSelect.value === 'Maintenance' || statusSelect.value === 'Retired') {
+                                            holderGroup.style.opacity = '0.5';
+                                            document.getElementById('sac-input-holder').disabled = true;
+                                            document.getElementById('sac-input-holder').value = '';
+                                        } else {
+                                            holderGroup.style.opacity = '1';
+                                            document.getElementById('sac-input-holder').disabled = false;
+                                        }
+                                    }
+                                    statusSelect.onchange = toggleHolderInput;
+                                    toggleHolderInput();
+                                }
+                            }
+
+                            // Show Scan Action Center Modal
+                            const sacModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('scanActionCenterModal'));
+                            sacModal.show();
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Aset atau APD tidak ditemukan dengan barcode: ' + decodedText);
+                    });
+            };
+
             document.addEventListener("DOMContentLoaded", function() {
                 const toggleBtn = document.getElementById("sidebarToggle");
                 const wrapper = document.getElementById("sidebar-wrapper");
@@ -373,16 +674,7 @@
                             { facingMode: 'environment' },
                             config,
                             (decodedText) => {
-                                try {
-                                    let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-84.wav');
-                                    audio.volume = 0.5;
-                                    audio.play().catch(() => {});
-                                } catch (e) {}
-
-                                // Close modal and redirect to assets with scanned code
-                                const bsModal = bootstrap.Modal.getInstance(globalScannerModal);
-                                bsModal.hide();
-                                window.location.href = '{{ route("assets.index") }}?search=' + encodeURIComponent(decodedText);
+                                handleScannedBarcode(decodedText);
                             },
                             () => {}
                         ).then(() => {
@@ -544,20 +836,49 @@
                     }
                 });
 
-                // Auto-dismiss alert-modern toasts after 5 seconds
-                const flashAlerts = document.querySelectorAll('.alert-modern');
-                flashAlerts.forEach(function(alert) {
-                    setTimeout(function() {
-                        const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-                        if (bsAlert) {
-                            bsAlert.close();
-                        } else {
-                            alert.style.transition = 'opacity 0.5s ease';
-                            alert.style.opacity = '0';
-                            setTimeout(() => alert.remove(), 500);
-                        }
-                    }, 5000);
-                });
+                // Quick status update AJAX handler for Scan Action Center
+                const quickUpdateForm = document.getElementById('sac-quick-update-form');
+                if (quickUpdateForm) {
+                    quickUpdateForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const actionUrl = this.action;
+                        const formData = new FormData(this);
+                        
+                        fetch(actionUrl, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: formData
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Hide modal
+                                const sacModal = bootstrap.Modal.getInstance(document.getElementById('scanActionCenterModal'));
+                                if (sacModal) sacModal.hide();
+                                
+                                // Show success message
+                                alert(data.message);
+                                
+                                // If we are on assets page, reload the datatable in place!
+                                if (typeof $ !== 'undefined' && $.fn.DataTable && $('#assets-table').length) {
+                                    $('#assets-table').DataTable().ajax.reload(null, false);
+                                } else {
+                                    // Reload page
+                                    window.location.reload();
+                                }
+                            } else {
+                                alert('Gagal memperbarui status aset.');
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert('Terjadi kesalahan koneksi saat memperbarui status.');
+                        });
+                    });
+                }
             });
         </script>
  
