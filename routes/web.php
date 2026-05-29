@@ -25,34 +25,37 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Assets
-    Route::get('assets/export', [AssetController::class, 'export'])->name('assets.export');
-    Route::get('assets/generate-code/{category_id}', [AssetController::class, 'generateCode'])->name('assets.generate-code');
-    Route::resource('assets', AssetController::class);
-
-    // API Services
+    // API Services (Search & Notifications remain globally available to auth users)
     Route::get('api/notifications', [AssetController::class, 'getNotifications'])->name('api.notifications');
     Route::get('api/search', [AssetController::class, 'globalSearch'])->name('api.search');
 
-    // Consumable Transactions (must be registered BEFORE the resource route)
-    Route::get('consumables/transactions/in', [ConsumableTransactionController::class, 'indexIn'])->name('consumables.transactions.in');
-    Route::get('consumables/transactions/out', [ConsumableTransactionController::class, 'indexOut'])->name('consumables.transactions.out');
-    Route::get('consumables/transactions/create', [ConsumableTransactionController::class, 'create'])->name('consumables.transactions.create');
-    Route::post('consumables/transactions', [ConsumableTransactionController::class, 'store'])->name('consumables.transactions.store');
+    // Admin & Inspector Only Resource Routes (Protected by role:admin)
+    Route::middleware('role:admin')->group(function () {
+        // Assets
+        Route::get('assets/export', [AssetController::class, 'export'])->name('assets.export');
+        Route::get('assets/generate-code/{category_id}', [AssetController::class, 'generateCode'])->name('assets.generate-code');
+        Route::resource('assets', AssetController::class);
 
-    // Consumables
-    Route::get('consumables/export', [ConsumableController::class, 'export'])->name('consumables.export');
-    Route::get('consumables/generate-code/{category_id}', [ConsumableController::class, 'generateCode'])->name('consumables.generate-code');
-    Route::resource('consumables', ConsumableController::class);
+        // Consumable Transactions (must be registered BEFORE the resource route)
+        Route::get('consumables/transactions/in', [ConsumableTransactionController::class, 'indexIn'])->name('consumables.transactions.in');
+        Route::get('consumables/transactions/out', [ConsumableTransactionController::class, 'indexOut'])->name('consumables.transactions.out');
+        Route::get('consumables/transactions/create', [ConsumableTransactionController::class, 'create'])->name('consumables.transactions.create');
+        Route::post('consumables/transactions', [ConsumableTransactionController::class, 'store'])->name('consumables.transactions.store');
 
-    // Stock Opnames
-    Route::resource('stock-opnames', StockOpnameController::class);
+        // Consumables
+        Route::get('consumables/export', [ConsumableController::class, 'export'])->name('consumables.export');
+        Route::get('consumables/generate-code/{category_id}', [ConsumableController::class, 'generateCode'])->name('consumables.generate-code');
+        Route::resource('consumables', ConsumableController::class);
 
-    // Master Data
-    Route::get('categories/{category}/items', [CategoryController::class, 'items'])->name('categories.items');
-    Route::resource('categories', CategoryController::class);
-    Route::resource('locations', LocationController::class);
-    Route::resource('suppliers', SupplierController::class);
+        // Stock Opnames
+        Route::resource('stock-opnames', StockOpnameController::class);
+
+        // Master Data
+        Route::get('categories/{category}/items', [CategoryController::class, 'items'])->name('categories.items');
+        Route::resource('categories', CategoryController::class);
+        Route::resource('locations', LocationController::class);
+        Route::resource('suppliers', SupplierController::class);
+    });
 
     // Staff Request & Reporting Portals (Any authenticated employee/staff)
     Route::prefix('staff')->name('staff.')->group(function () {
