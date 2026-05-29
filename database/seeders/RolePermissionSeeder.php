@@ -29,6 +29,8 @@ class RolePermissionSeeder extends Seeder
             'assets.view', 'assets.create', 'assets.edit', 'assets.delete',
             'consumables.view', 'consumables.create', 'consumables.edit', 'consumables.delete',
             'master.manage', // categories, locations, suppliers
+            'requests.view', 'requests.create', 'requests.manage',
+            'damage_reports.view', 'damage_reports.create', 'damage_reports.manage',
         ];
 
         foreach ($permissions as $permission) {
@@ -43,13 +45,17 @@ class RolePermissionSeeder extends Seeder
         $roleStaff->givePermissionTo([
             'assets.view', 'assets.create', 'assets.edit',
             'consumables.view', 'consumables.create', 'consumables.edit',
-            'master.manage'
+            'master.manage',
+            'requests.view', 'requests.create',
+            'damage_reports.view', 'damage_reports.create',
         ]);
 
         $roleKaryawan = Role::firstOrCreate(['name' => 'karyawan']);
         $roleKaryawan->givePermissionTo([
             'assets.view',
             'consumables.view',
+            'requests.view', 'requests.create',
+            'damage_reports.view', 'damage_reports.create',
         ]);
 
         // Create default admin
