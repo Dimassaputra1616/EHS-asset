@@ -165,12 +165,12 @@
                             </div>
                         </div>
                         <div class="col-md-5 d-flex flex-column align-items-center justify-content-center text-center ps-md-4">
-                            <div class="p-3 bg-white border rounded-3 mb-3 shadow-sm w-100" style="min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                <svg id="barcode-display" style="max-width: 100%; height: auto;"></svg>
+                            <div class="p-3 bg-white border rounded-3 mb-3 shadow-sm w-100" style="min-height: 190px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                <div id="qrcode-display" class="p-2 bg-light rounded" style="display: flex; justify-content: center; align-items: center; min-width: 140px; min-height: 140px;"></div>
                                 <div id="barcode-code" class="font-monospace fw-bold text-dark mt-2" style="letter-spacing: 2px;"></div>
                             </div>
                             <button type="button" class="btn btn-outline-danger fw-bold w-100" id="btn-print-barcode">
-                                <i class="bi bi-printer me-1"></i> Print Barcode Label
+                                <i class="bi bi-qr-code me-1"></i> Print QR Label
                             </button>
                         </div>
                     </div>
@@ -210,6 +210,7 @@
 <!-- SweetAlert2 & JsBarcode -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script>
     $(function () {
@@ -293,7 +294,7 @@
             $('#view-purchase-cost').text('-');
             $('#view-description').text('-');
             $('#barcode-code').text('');
-            $('#barcode-display').html('');
+            $('#qrcode-display').html('');
 
             $('#viewAssetModal').modal('show');
 
@@ -329,14 +330,16 @@
                     $('#view-assigned-to').text(asset.assigned_to ? asset.assigned_to : '-');
                     $('#view-description').text(asset.description ? asset.description : '-');
 
-                    // Generate Barcode SVG
+                    // Generate QR Code
                     $('#barcode-code').text(asset.code);
-                    JsBarcode("#barcode-display", asset.code, {
-                        format: "CODE128",
-                        width: 2,
-                        height: 50,
-                        displayValue: false,
-                        margin: 10
+                    $('#qrcode-display').html('');
+                    new QRCode(document.getElementById("qrcode-display"), {
+                        text: asset.code,
+                        width: 120,
+                        height: 120,
+                        colorDark : "#0f172a",
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.M
                     });
                 })
                 .catch(err => {
@@ -476,8 +479,8 @@
             printWindow.document.write('.tc-tr { top: 6px; right: 6px; border-width: 2px 2px 0 0; }');
             printWindow.document.write('.tc-bl { bottom: 6px; left: 6px; border-width: 0 0 2px 2px; }');
             printWindow.document.write('.tc-br { bottom: 6px; right: 6px; border-width: 0 2px 2px 0; }');
-            printWindow.document.write('.barcode-container { background: #ffffff; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; box-sizing: border-box; }');
-            printWindow.document.write('.barcode-container svg { width: 100% !important; height: auto !important; }');
+            printWindow.document.write('.qrcode-container { background: #ffffff; padding: 10px; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; box-sizing: border-box; }');
+            printWindow.document.write('.qrcode-container img { max-width: 100%; height: auto; }');
             printWindow.document.write('.label-right { flex: 1; padding-left: 20px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; }');
             printWindow.document.write('.brand-title { font-size: 9px; font-weight: 800; color: #ef4444; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 4px 0; }');
             printWindow.document.write('.asset-name { font-size: 18px; font-weight: 800; color: #ffffff; margin: 0 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }');
@@ -503,9 +506,7 @@
             printWindow.document.write('    <div class="tech-corner tc-tr"></div>');
             printWindow.document.write('    <div class="tech-corner tc-bl"></div>');
             printWindow.document.write('    <div class="tech-corner tc-br"></div>');
-            printWindow.document.write('    <div class="barcode-container">');
-            printWindow.document.write('      <svg id="barcode-print"></svg>');
-            printWindow.document.write('    </div>');
+            printWindow.document.write('    <div class="qrcode-container" id="qrcode-print"></div>');
             printWindow.document.write('  </div>');
             printWindow.document.write('  <div class="label-right">');
             printWindow.document.write('    <div>');
@@ -519,10 +520,10 @@
             printWindow.document.write('    </div>');
             printWindow.document.write('  </div>');
             printWindow.document.write('</div>');
-            printWindow.document.write('<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>');
+            printWindow.document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>');
             printWindow.document.write('<script>');
             printWindow.document.write('window.onload = function() {');
-            printWindow.document.write('  JsBarcode("#barcode-print", "' + code + '", { format: "CODE128", width: 2, height: 75, displayValue: false, margin: 0 });');
+            printWindow.document.write('  new QRCode(document.getElementById("qrcode-print"), { text: "' + code + '", width: 110, height: 110, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });');
             printWindow.document.write('  setTimeout(function() { window.print(); window.close(); }, 500);');
             printWindow.document.write('};');
             printWindow.document.write('<\/script>');

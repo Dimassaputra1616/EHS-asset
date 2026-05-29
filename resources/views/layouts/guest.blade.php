@@ -492,19 +492,350 @@
                 }
                 .auth-wrapper { justify-content: center; }
             }
+
+            /* ================================================ */
+            /* CENTERED CARD STYLE (PORTAL GLASSMORPHISM)        */
+            /* ================================================ */
+            body.login-style-centered-card {
+                overflow-y: auto !important;
+            }
+            body.login-style-centered-card .mesh-bg {
+                background: url('{{ str_contains(config("app.login_bg", "images/auth/welcome-bg.png"), "images/auth") ? asset(config("app.login_bg", "images/auth/welcome-bg.png")) : asset("storage/" . config("app.login_bg")) }}') center/cover no-repeat !important;
+                filter: blur(25px) brightness(0.55) saturate(1.3);
+                transform: scale(1.15);
+            }
+            body.login-style-centered-card .grid-overlay { display: none !important; }
+            body.login-style-centered-card .geo-shape { display: none !important; }
+            body.login-style-centered-card .auth-brand-panel { display: none !important; }
+
+            body.login-style-centered-card .auth-wrapper {
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                padding: 2rem;
+            }
+            body.login-style-centered-card .auth-form-panel {
+                width: 100%;
+                max-width: 480px;
+                min-width: auto;
+                background: rgba(255, 255, 255, 0.10) !important;
+                backdrop-filter: blur(30px) saturate(170%) !important;
+                -webkit-backdrop-filter: blur(30px) saturate(170%) !important;
+                border: 1px solid rgba(255, 255, 255, 0.18) !important;
+                border-radius: 28px !important;
+                box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.05) inset !important;
+                padding: 2.5rem 2.5rem 2rem !important;
+            }
+
+            /* Text overrides for dark glass */
+            body.login-style-centered-card .portal-title { display: block !important; }
+            body.login-style-centered-card .portal-illustration { display: block !important; }
+            body.login-style-centered-card .status-bar { display: none !important; }
+            body.login-style-centered-card .separator-line { display: none !important; }
+
+            body.login-style-centered-card .form-header {
+                text-align: center;
+            }
+            body.login-style-centered-card .form-header h2 {
+                color: #ffffff !important;
+                font-size: 1.45rem !important;
+                text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+            }
+            body.login-style-centered-card .form-header p {
+                color: rgba(255,255,255,0.65) !important;
+                font-size: 0.82rem !important;
+            }
+            body.login-style-centered-card .modern-input-group label {
+                display: none !important;
+            }
+            body.login-style-centered-card .modern-input-wrapper {
+                background: rgba(255, 255, 255, 0.08) !important;
+                border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+                border-radius: 12px !important;
+            }
+            body.login-style-centered-card .modern-input-wrapper:hover {
+                border-color: rgba(255, 255, 255, 0.25) !important;
+                background: rgba(255, 255, 255, 0.12) !important;
+            }
+            body.login-style-centered-card .modern-input-wrapper:focus-within {
+                border-color: #818cf8 !important;
+                box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.2) !important;
+                background: rgba(255, 255, 255, 0.12) !important;
+            }
+            body.login-style-centered-card .modern-input-wrapper input {
+                color: #ffffff !important;
+                padding: 12px 14px 12px 0 !important;
+            }
+            body.login-style-centered-card .modern-input-wrapper input::placeholder {
+                color: rgba(255, 255, 255, 0.4) !important;
+            }
+            body.login-style-centered-card .modern-input-wrapper .input-icon {
+                color: rgba(255, 255, 255, 0.45) !important;
+            }
+            body.login-style-centered-card .modern-input-wrapper:focus-within .input-icon {
+                color: #a78bfa !important;
+            }
+            body.login-style-centered-card .password-toggle-btn {
+                color: rgba(255,255,255,0.4) !important;
+            }
+            body.login-style-centered-card .password-toggle-btn:hover {
+                color: #a78bfa !important;
+            }
+            body.login-style-centered-card .btn-signin {
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%) !important;
+                box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4) !important;
+                letter-spacing: 1px !important;
+                border-radius: 12px !important;
+                padding: 14px !important;
+            }
+            body.login-style-centered-card .btn-signin:hover {
+                box-shadow: 0 10px 35px rgba(99, 102, 241, 0.5) !important;
+            }
+            body.login-style-centered-card .auth-options .form-check-label {
+                color: rgba(255,255,255,0.6) !important;
+            }
+            body.login-style-centered-card .auth-options .form-check-input {
+                background-color: rgba(255,255,255,0.08);
+                border-color: rgba(255,255,255,0.2);
+            }
+            body.login-style-centered-card .auth-options .form-check-input:checked {
+                background-color: #8b5cf6;
+                border-color: #8b5cf6;
+            }
+            body.login-style-centered-card .auth-options a {
+                color: #a78bfa !important;
+            }
+            body.login-style-centered-card .auth-options a:hover {
+                color: #c4b5fd !important;
+            }
+            body.login-style-centered-card .auth-footer {
+                border-top-color: rgba(255,255,255,0.08) !important;
+                margin-top: 1.5rem !important;
+                padding-top: 1rem !important;
+            }
+            body.login-style-centered-card .auth-footer span {
+                color: rgba(255,255,255,0.4) !important;
+            }
+            body.login-style-centered-card .input-error {
+                color: #fca5a5 !important;
+            }
+
+            /* Portal Title (only visible in centered-card) */
+            .portal-title {
+                display: none;
+                text-align: center;
+                margin-bottom: 0.25rem;
+            }
+            .portal-title h3 {
+                font-family: 'Outfit', sans-serif;
+                font-size: 1.15rem;
+                font-weight: 400;
+                color: rgba(255,255,255,0.9);
+                letter-spacing: 0.5px;
+            }
+            .portal-title h3 strong {
+                font-weight: 700;
+                color: #ffffff;
+            }
+
+            /* Portal Illustration (only visible in centered-card) */
+            .portal-illustration {
+                display: none;
+                text-align: center;
+                margin: 0.75rem 0 0.5rem;
+            }
+            .portal-illustration img {
+                max-width: 250px;
+                width: 100%;
+                height: auto;
+                border-radius: 16px;
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+                border: 1px solid rgba(255, 255, 255, 0.22) !important;
+                background: rgba(255, 255, 255, 0.95) !important;
+                padding: 10px !important;
+                transition: all 0.3s ease;
+            }
+            .portal-illustration img:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 16px 35px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Floating Icon Cards */
+            .floating-icon-card {
+                display: none;
+                position: fixed;
+                align-items: center;
+                justify-content: center;
+                width: 60px;
+                height: 60px;
+                background: rgba(255, 255, 255, 0.12) !important;
+                backdrop-filter: blur(15px) !important;
+                -webkit-backdrop-filter: blur(15px) !important;
+                border: 1px solid rgba(255, 255, 255, 0.22) !important;
+                border-radius: 16px !important;
+                z-index: 5;
+                pointer-events: none;
+                transition: all 0.3s ease;
+            }
+            .floating-icon-card i {
+                font-size: 1.6rem;
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                -webkit-background-clip: text !important;
+                -webkit-text-fill-color: transparent !important;
+                background-clip: text !important;
+            }
+
+            /* Custom Premium Colors and Shadows matching the screenshot */
+            .floating-icon-card.icon-server {
+                box-shadow: 0 10px 30px rgba(0, 242, 254, 0.22), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+            }
+            .floating-icon-card.icon-server i {
+                background-image: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%) !important;
+            }
+
+            .floating-icon-card.icon-key {
+                box-shadow: 0 10px 30px rgba(118, 75, 162, 0.22), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+            }
+            .floating-icon-card.icon-key i {
+                background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            }
+
+            .floating-icon-card.icon-database {
+                box-shadow: 0 10px 30px rgba(245, 87, 108, 0.22), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+            }
+            .floating-icon-card.icon-database i {
+                background-image: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+            }
+
+            .floating-icon-card.icon-barcode {
+                box-shadow: 0 10px 30px rgba(148, 163, 184, 0.18), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+            }
+            .floating-icon-card.icon-barcode i {
+                background-image: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%) !important;
+            }
+
+            .floating-icon-card.icon-map {
+                box-shadow: 0 10px 30px rgba(253, 160, 133, 0.22), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+            }
+            .floating-icon-card.icon-map i {
+                background-image: linear-gradient(135deg, #f6d365 0%, #fda085 100%) !important;
+            }
+
+            .floating-icon-card.icon-sync {
+                box-shadow: 0 10px 30px rgba(132, 250, 176, 0.22), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+            }
+            .floating-icon-card.icon-sync i {
+                background-image: linear-gradient(135deg, #8fd3f4 0%, #84fab0 100%) !important;
+            }
+
+            .floating-icon-card.icon-tools {
+                box-shadow: 0 10px 30px rgba(56, 239, 125, 0.22), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+            }
+            .floating-icon-card.icon-tools i {
+                background-image: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+            }
+
+            .floating-icon-card.icon-laptop {
+                box-shadow: 0 10px 30px rgba(142, 197, 252, 0.22), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+            }
+            .floating-icon-card.icon-laptop i {
+                background-image: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%) !important;
+            }
+
+            .floating-icon-card.icon-cpu {
+                box-shadow: 0 10px 30px rgba(255, 8, 68, 0.22), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+            }
+            .floating-icon-card.icon-cpu i {
+                background-image: linear-gradient(135deg, #ff0844 0%, #ffb199 100%) !important;
+            }
+
+            .floating-icon-card.icon-shield {
+                box-shadow: 0 10px 30px rgba(109, 213, 237, 0.22), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+            }
+            .floating-icon-card.icon-shield i {
+                background-image: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%) !important;
+            }
+
+            body.login-style-centered-card .floating-icon-card {
+                display: flex;
+            }
+
+            .floating-icons-container .floating-icon-card:nth-child(1) { top: 10%; left: 8%; animation: floatPath1 16s ease-in-out infinite; }
+            .floating-icons-container .floating-icon-card:nth-child(2) { top: 28%; left: 4%; animation: floatPath2 18s ease-in-out infinite; }
+            .floating-icons-container .floating-icon-card:nth-child(3) { top: 48%; left: 9%; animation: floatPath3 17s ease-in-out infinite; }
+            .floating-icons-container .floating-icon-card:nth-child(4) { top: 66%; left: 5%; animation: floatPath4 15s ease-in-out infinite; }
+            .floating-icons-container .floating-icon-card:nth-child(5) { top: 84%; left: 11%; animation: floatPath1 20s ease-in-out infinite; }
+
+            .floating-icons-container .floating-icon-card:nth-child(6) { top: 12%; right: 8%; left: auto; animation: floatPath3 14s ease-in-out infinite; }
+            .floating-icons-container .floating-icon-card:nth-child(7) { top: 30%; right: 4%; left: auto; animation: floatPath4 19s ease-in-out infinite; }
+            .floating-icons-container .floating-icon-card:nth-child(8) { top: 50%; right: 10%; left: auto; animation: floatPath1 15s ease-in-out infinite; }
+            .floating-icons-container .floating-icon-card:nth-child(9) { top: 68%; right: 6%; left: auto; animation: floatPath2 16s ease-in-out infinite; }
+            .floating-icons-container .floating-icon-card:nth-child(10) { top: 86%; right: 11%; left: auto; animation: floatPath3 18s ease-in-out infinite; }
+
+            @keyframes floatPath1 {
+                0% { transform: translate(0, 0) rotate(0deg); }
+                33% { transform: translate(15px, -18px) rotate(4deg); }
+                66% { transform: translate(-12px, 12px) rotate(-3deg); }
+                100% { transform: translate(0, 0) rotate(0deg); }
+            }
+
+            @keyframes floatPath2 {
+                0% { transform: translate(0, 0) rotate(0deg); }
+                50% { transform: translate(-18px, -12px) rotate(-6deg); }
+                100% { transform: translate(0, 0) rotate(0deg); }
+            }
+
+            @keyframes floatPath3 {
+                0% { transform: translate(0, 0) rotate(0deg); }
+                40% { transform: translate(16px, 10px) rotate(5deg); }
+                80% { transform: translate(-10px, -16px) rotate(-4deg); }
+                100% { transform: translate(0, 0) rotate(0deg); }
+            }
+
+            @keyframes floatPath4 {
+                0% { transform: translate(0, 0) rotate(0deg); }
+                50% { transform: translate(10px, -20px) rotate(3deg); }
+                100% { transform: translate(0, 0) rotate(0deg); }
+            }
+
+            /* Centered-card responsive */
+            @media (max-width: 991px) {
+                body.login-style-centered-card .floating-icon-card { display: none !important; }
+                body.login-style-centered-card .auth-form-panel {
+                    padding: 2rem 1.5rem 1.5rem !important;
+                }
+            }
         </style>
     </head>
-    <body class="auth-page">
+    <body class="auth-page login-style-{{ config('app.login_style', 'split') }}">
         <!-- Background layers -->
         <div class="mesh-bg"></div>
         <div class="grid-overlay"></div>
 
-        <!-- Floating geometric shapes -->
+        <!-- Floating geometric shapes (split style) -->
         <div class="geo-shape"></div>
         <div class="geo-shape"></div>
         <div class="geo-shape"></div>
         <div class="geo-shape"></div>
         <div class="geo-shape"></div>
+
+        <div class="floating-icons-container">
+            <!-- Left Side Icons -->
+            <div class="floating-icon-card icon-server"><i class="bi bi-hdd-rack"></i></div>
+            <div class="floating-icon-card icon-key"><i class="bi bi-key"></i></div>
+            <div class="floating-icon-card icon-tools"><i class="bi bi-tools"></i></div>
+            <div class="floating-icon-card icon-database"><i class="bi bi-database"></i></div>
+            <div class="floating-icon-card icon-laptop"><i class="bi bi-laptop"></i></div>
+
+            <!-- Right Side Icons -->
+            <div class="floating-icon-card icon-barcode"><i class="bi bi-qr-code-scan"></i></div>
+            <div class="floating-icon-card icon-map"><i class="bi bi-geo-alt"></i></div>
+            <div class="floating-icon-card icon-cpu"><i class="bi bi-cpu"></i></div>
+            <div class="floating-icon-card icon-sync"><i class="bi bi-arrow-repeat"></i></div>
+            <div class="floating-icon-card icon-shield"><i class="bi bi-shield-check"></i></div>
+        </div>
 
         <div class="auth-wrapper">
             <!-- Left: Branding Panel (PREMIUM RED) -->

@@ -94,6 +94,12 @@ class AppConfigSeeder extends Seeder
                 'label' => 'Login Background Image',
                 'group' => 'appearance',
             ],
+            [
+                'key' => 'login_style',
+                'value' => 'split',
+                'label' => 'Login Page Style Theme',
+                'group' => 'appearance',
+            ],
         ];
 
         foreach ($configs as $config) {

@@ -45,7 +45,12 @@
 </style>
 
 <x-guest-layout>
-    <!-- Status bar dots -->
+    <!-- Portal Title (visible only in centered-card style via CSS) -->
+    <div class="portal-title fade-in-up">
+        <h3><strong>{{ config('app.name', 'HSE') }}</strong> Portal</h3>
+    </div>
+
+    <!-- Status bar dots (visible only in split style) -->
     <div class="status-bar fade-in-up">
         <div class="status-dot active"></div>
         <div class="status-dot"></div>
@@ -53,8 +58,15 @@
     </div>
 
     <div class="form-header fade-in-up">
-        <h2>Welcome Back</h2>
-        <p>Sign in to your {{ config('app.name', 'HSE Asset Management') }} portal</p>
+        <h2 style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.6rem; letter-spacing: -0.5px;">Welcome back to your Asset Management Portal.</h2>
+        <p class="mb-0" style="font-size: 0.85rem;">
+            Sign in to centralize your asset inventory, track allocations, and optimize lifecycles.
+        </p>
+    </div>
+
+    <!-- Illustration (visible only in centered-card style via CSS) -->
+    <div class="portal-illustration fade-in-up">
+        <img src="{{ asset('images/auth/login-illustration.png') }}" alt="Asset Management Illustration">
     </div>
 
     <div class="separator-line fade-in-up">

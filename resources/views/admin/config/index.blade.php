@@ -117,6 +117,61 @@
         padding: 4px !important;
         cursor: pointer;
     }
+
+
+    /* Style choice cards for login page */
+    .login-style-card {
+        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: #ffffff;
+        position: relative;
+    }
+    .login-style-card:hover {
+        transform: translateY(-4px);
+        border-color: #cbd5e1;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+    }
+    .login-style-card.active {
+        border-color: var(--hse-red, #C0392B);
+        box-shadow: 0 12px 25px rgba(192, 57, 43, 0.12);
+    }
+    .style-selected-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: var(--hse-red, #C0392B);
+        color: white;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        box-shadow: 0 2px 8px rgba(192, 57, 43, 0.3);
+        opacity: 0;
+        transform: scale(0.6);
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 10;
+    }
+    .login-style-card.active .style-selected-badge {
+        opacity: 1;
+        transform: scale(1);
+    }
+    .mockup-preview-screen {
+        height: 100px;
+        background: #f8fafc;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem;
+        overflow: hidden;
+        border-radius: 14px 14px 0 0;
+    }
 </style>
 @endpush
 
@@ -245,6 +300,69 @@
                                                                 </div>
                                                                 <div class="small text-muted">Upload a premium landscape banner (PNG, JPG, or WEBP, max 3MB). Recommended size: 1920x1080.</div>
                                                             </div>
+                                                        @elseif($config->key == 'login_style')
+                                                            <div class="row g-3 mt-2">
+                                                                <!-- Style 1: Split -->
+                                                                <div class="col-md-6">
+                                                                    <div class="login-style-card h-100 p-3 {{ $config->value == 'split' ? 'active' : '' }}" onclick="selectLoginStyle('split', this)">
+                                                                        <div class="style-selected-badge"><i class="bi bi-check-lg"></i></div>
+                                                                        <div class="mockup-preview-screen">
+                                                                            <div style="display:flex; width:100%; height:100%; border-radius:6px; overflow:hidden;">
+                                                                                <div style="width:45%; background:linear-gradient(135deg, #1c1515, #291818); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;">
+                                                                                    <div style="width:6px; height:6px; border-radius:50%; background:#fff;"></div>
+                                                                                    <div style="width:60%; height:2px; background:#fff; opacity:0.3; border-radius:2px;"></div>
+                                                                                    <div style="width:45%; height:2px; background:#fff; opacity:0.3; border-radius:2px;"></div>
+                                                                                </div>
+                                                                                <div style="width:55%; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;">
+                                                                                    <div style="width:6px; height:6px; border-radius:50%; background:var(--hse-red);"></div>
+                                                                                    <div style="width:70%; height:4px; background:#e2e8f0; border-radius:2px;"></div>
+                                                                                    <div style="width:70%; height:4px; background:#e2e8f0; border-radius:2px;"></div>
+                                                                                    <div style="width:70%; height:5px; background:var(--hse-red); border-radius:2px;"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="pt-3 text-center">
+                                                                            <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.85rem;">Split Screen</h6>
+                                                                            <p class="text-muted mb-0" style="font-size: 0.72rem;">Sisi kiri gambar branding, sisi kanan form login (Default).</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Style 2: Centered Card -->
+                                                                <div class="col-md-6">
+                                                                    <div class="login-style-card h-100 p-3 {{ $config->value == 'centered-card' ? 'active' : '' }}" onclick="selectLoginStyle('centered-card', this)">
+                                                                        <div class="style-selected-badge"><i class="bi bi-check-lg"></i></div>
+                                                                        <div class="mockup-preview-screen">
+                                                                            <div style="width:100%; height:100%; background:linear-gradient(135deg, #2d1b69, #1a1a3e); border-radius:6px; display:flex; align-items:center; justify-content:center; position:relative;">
+                                                                                <!-- Floating mini icons with tiny colored icons -->
+                                                                                <div style="position:absolute; top:10%; left:8%; width:16px; height:16px; background:rgba(255,255,255,0.12); border-radius:4px; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"><i class="bi bi-hdd-rack" style="font-size: 8px; background: linear-gradient(135deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i></div>
+                                                                                <div style="position:absolute; top:28%; left:4%; width:16px; height:16px; background:rgba(255,255,255,0.12); border-radius:4px; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"><i class="bi bi-key" style="font-size: 8px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i></div>
+                                                                                <div style="position:absolute; top:48%; left:9%; width:16px; height:16px; background:rgba(255,255,255,0.12); border-radius:4px; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"><i class="bi bi-tools" style="font-size: 8px; background: linear-gradient(135deg, #11998e, #38ef7d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i></div>
+                                                                                <div style="position:absolute; top:66%; left:5%; width:16px; height:16px; background:rgba(255,255,255,0.12); border-radius:4px; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"><i class="bi bi-database" style="font-size: 8px; background: linear-gradient(135deg, #f093fb, #f5576c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i></div>
+                                                                                <div style="position:absolute; top:84%; left:11%; width:16px; height:16px; background:rgba(255,255,255,0.12); border-radius:4px; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"><i class="bi bi-laptop" style="font-size: 8px; background: linear-gradient(135deg, #e0c3fc, #8ec5fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i></div>
+                                                                                
+                                                                                <div style="position:absolute; top:12%; right:8%; width:16px; height:16px; background:rgba(255,255,255,0.12); border-radius:4px; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"><i class="bi bi-qr-code-scan" style="font-size: 8px; background: linear-gradient(135deg, #cfd9df, #e2ebf0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i></div>
+                                                                                <div style="position:absolute; top:30%; right:4%; width:16px; height:16px; background:rgba(255,255,255,0.12); border-radius:4px; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"><i class="bi bi-geo-alt" style="font-size: 8px; background: linear-gradient(135deg, #f6d365, #fda085); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i></div>
+                                                                                <div style="position:absolute; top:50%; right:10%; width:16px; height:16px; background:rgba(255,255,255,0.12); border-radius:4px; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"><i class="bi bi-cpu" style="font-size: 8px; background: linear-gradient(135deg, #ff0844, #ffb199); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i></div>
+                                                                                <div style="position:absolute; top:68%; right:6%; width:16px; height:16px; background:rgba(255,255,255,0.12); border-radius:4px; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"><i class="bi bi-arrow-repeat" style="font-size: 8px; background: linear-gradient(135deg, #8fd3f4, #84fab0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i></div>
+                                                                                <div style="position:absolute; top:86%; right:11%; width:16px; height:16px; background:rgba(255,255,255,0.12); border-radius:4px; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"><i class="bi bi-shield-check" style="font-size: 8px; background: linear-gradient(135deg, #2193b0, #6dd5ed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i></div>
+                                                                                <!-- Center glass card -->
+                                                                                <div style="width:55%; height:75%; background:rgba(255,255,255,0.1); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.18); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:4px;">
+                                                                                    <div style="width:5px; height:5px; border-radius:50%; background:#a78bfa;"></div>
+                                                                                    <div style="width:65%; height:3px; background:rgba(255,255,255,0.2); border-radius:2px;"></div>
+                                                                                    <div style="width:65%; height:3px; background:rgba(255,255,255,0.2); border-radius:2px;"></div>
+                                                                                    <div style="width:65%; height:4px; background:linear-gradient(90deg, #6366f1, #a855f7); border-radius:2px;"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="pt-3 text-center">
+                                                                            <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.85rem;">Centered Card</h6>
+                                                                            <p class="text-muted mb-0" style="font-size: 0.72rem;">Glassmorphism card di tengah dengan background blur dan floating icons.</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <input type="hidden" name="login_style" id="login_style_input" value="{{ $config->value }}">
                                                         @elseif($config->key == 'sidebar_theme')
                                                              <select name="{{ $config->key }}" id="{{ $config->key }}" class="form-select form-select-lg mt-1 fs-6" style="max-width: 280px;">
                                                                  <option value="Dark" {{ $config->value == 'Dark' ? 'selected' : '' }}>Midnight Dark 🖤</option>
@@ -342,6 +460,14 @@
             });
         }
     });
+
+    function selectLoginStyle(style, cardElement) {
+        const input = document.getElementById('login_style_input');
+        if (input) input.value = style;
+        document.querySelectorAll('.login-style-card').forEach(c => c.classList.remove('active'));
+        if (cardElement) cardElement.classList.add('active');
+    }
+
 
     function updatePrimaryColorPreview(val) {
         if (val.length === 7 && val.startsWith('#')) {
