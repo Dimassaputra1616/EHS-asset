@@ -260,7 +260,7 @@
                                                                 </div>
                                                                 <div class="text-muted small fw-semibold">Pilih warna utama atau masukkan kode HEX untuk mengubah tema visual aplikasi secara instan.</div>
                                                             </div>
-                                                        @elseif($config->key == 'app_logo' || Str::contains($config->key, 'logo'))
+                                                        @elseif($config->key == 'app_logo')
                                                             <div class="mt-2 d-flex flex-column gap-3">
                                                                 <!-- Modern Image Preview Frame -->
                                                                 <div class="d-flex align-items-center gap-3 logo-uploader-frame">
