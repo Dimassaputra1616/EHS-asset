@@ -34,7 +34,14 @@ class UserController extends Controller
                         $options .= '<option value="'.$role.'" '.$selected.'>'.ucfirst($role).'</option>';
                     }
                     
-                    $roleClass = ($currentRole == 'admin') ? 'role-admin' : (($currentRole == 'staff') ? 'role-staff' : 'role-other');
+                    $roleClass = 'role-other';
+                    if ($currentRole == 'super admin') {
+                        $roleClass = 'role-super-admin';
+                    } elseif ($currentRole == 'admin') {
+                        $roleClass = 'role-admin';
+                    } elseif ($currentRole == 'staff') {
+                        $roleClass = 'role-staff';
+                    }
                     
                     return '<select class="role-select role-select-badge '.$roleClass.'" data-user-id="'.$row->id.'">
                                 '.$options.'

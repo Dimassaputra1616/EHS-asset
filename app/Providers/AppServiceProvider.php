@@ -1,9 +1,10 @@
 <?php
-
+ 
 namespace App\Providers;
-
+ 
 use Illuminate\Support\ServiceProvider;
-
+use Illuminate\Support\Facades\Gate;
+ 
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,12 +14,17 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
-
+ 
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
     {
+        // Implicitly grant "super admin" role all permissions
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole('super admin') ? true : null;
+        });
+
         if (
             str_contains(request()->getHost(), 'ngrok') || 
             request()->header('x-forwarded-proto') === 'https' || 
@@ -26,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         ) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
-
+ 
         // Dynamically load database configurations into Laravel config
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('app_configs')) {

@@ -88,8 +88,10 @@
                         showRoleToast('success', response.message);
                         
                         // Dynamically update the pill badge colors instantly
-                        selectEl.removeClass('role-admin role-staff role-other');
-                        if (selectedRole === 'admin') {
+                        selectEl.removeClass('role-super-admin role-admin role-staff role-other');
+                        if (selectedRole === 'super admin') {
+                            selectEl.addClass('role-super-admin');
+                        } else if (selectedRole === 'admin') {
                             selectEl.addClass('role-admin');
                         } else if (selectedRole === 'staff') {
                             selectEl.addClass('role-staff');
