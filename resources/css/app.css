@@ -1633,9 +1633,8 @@ div.dataTables_wrapper div.dataTables_info {
     color: #3498DB;
 }
 .btn-action.btn-edit:hover {
-    background: linear-gradient(180deg, #1c1515 0%, #291818 100%);
-    color: #fcfcfc;
-    border-right: 1px solid rgba(255,255,255,0.02);
+    background: #3498DB;
+    color: white;
     transform: translateY(-1px);
 }
 .btn-action.btn-delete {
