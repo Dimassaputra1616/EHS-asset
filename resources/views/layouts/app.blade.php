@@ -406,16 +406,6 @@
             </a>
             @endcan
         </div>
-        <!-- PWA Drawer Sign Out Button (Opsi 1) -->
-        <div class="pwa-more-footer p-3 border-top bg-light">
-            <form method="POST" action="{{ route('logout') }}" class="m-0">
-                @csrf
-                <button type="submit" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 py-2.5" style="border-radius: 12px; font-weight: 700; font-size: 0.9rem; transition: all 0.2s ease;">
-                    <i class="bi bi-box-arrow-right fs-5"></i>
-                    <span>Sign Out Account</span>
-                </button>
-            </form>
-        </div>
     </div>
  
     <!-- Global Search Modal (Command Palette Style) -->
