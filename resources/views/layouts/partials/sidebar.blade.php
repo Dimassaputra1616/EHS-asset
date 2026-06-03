@@ -438,83 +438,123 @@
             <i class="bi bi-grid-1x2" style="color: #38bdf8;"></i> <span>Dashboard</span>
         </a>
         
-        @role('admin')
-        <div class="sidebar-section-header">Assets & Items</div>
-        
-        <a class="list-group-item {{ request()->routeIs('assets.*') ? 'active' : '' }}" href="{{ route('assets.index') }}">
-            <i class="bi bi-box-seam" style="color: #f87171;"></i> <span>Fixed Assets</span>
-        </a>
-        
-        <a class="list-group-item d-flex justify-content-between align-items-center {{ request()->routeIs('consumables.*') ? 'active' : '' }}" 
-           href="#consumablesSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('consumables.*') ? 'true' : 'false' }}">
-            <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-basket" style="color: #4ade80;"></i> <span>Consumables</span>
+        {{-- Assets & Items --}}
+        @if(auth()->user()->can('assets.view') || auth()->user()->can('consumables.view') || auth()->user()->can('master.manage'))
+            <div class="sidebar-section-header">Assets & Items</div>
+            
+            @can('assets.view')
+            <a class="list-group-item {{ request()->routeIs('assets.*') ? 'active' : '' }}" href="{{ route('assets.index') }}">
+                <i class="bi bi-box-seam" style="color: #f87171;"></i> <span>Fixed Assets</span>
+            </a>
+            @endcan
+            
+            @can('consumables.view')
+            <a class="list-group-item d-flex justify-content-between align-items-center {{ request()->routeIs('consumables.*') ? 'active' : '' }}" 
+               href="#consumablesSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('consumables.*') ? 'true' : 'false' }}">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-basket" style="color: #4ade80;"></i> <span>Consumables</span>
+                </div>
+                <i class="bi bi-chevron-down small collapse-arrow"></i>
+            </a>
+            <div class="collapse {{ request()->routeIs('consumables.*') ? 'show' : '' }}" id="consumablesSubmenu">
+                <div class="sidebar-submenu">
+                    <a class="list-group-item border-0 py-2 {{ request()->routeIs('consumables.index') ? 'active' : '' }}" href="{{ route('consumables.index') }}">
+                        <i class="bi bi-circle-fill" style="font-size: 6px; color: #4ade80;"></i> Stock Consumables
+                    </a>
+                    <a class="list-group-item border-0 py-2 {{ request()->routeIs('consumables.transactions.in') ? 'active' : '' }}" href="{{ route('consumables.transactions.in') }}">
+                        <i class="bi bi-box-arrow-in-down text-success"></i> Barang Masuk
+                    </a>
+                    <a class="list-group-item border-0 py-2 {{ request()->routeIs('consumables.transactions.out') ? 'active' : '' }}" href="{{ route('consumables.transactions.out') }}">
+                        <i class="bi bi-box-arrow-up text-danger"></i> Barang Keluar
+                    </a>
+                </div>
             </div>
-            <i class="bi bi-chevron-down small collapse-arrow"></i>
-        </a>
-        <div class="collapse {{ request()->routeIs('consumables.*') ? 'show' : '' }}" id="consumablesSubmenu">
-            <div class="sidebar-submenu">
-                <a class="list-group-item border-0 py-2 {{ request()->routeIs('consumables.index') ? 'active' : '' }}" href="{{ route('consumables.index') }}">
-                    <i class="bi bi-circle-fill" style="font-size: 6px; color: #4ade80;"></i> Stock Consumables
-                </a>
-                <a class="list-group-item border-0 py-2 {{ request()->routeIs('consumables.transactions.in') ? 'active' : '' }}" href="{{ route('consumables.transactions.in') }}">
-                    <i class="bi bi-box-arrow-in-down text-success"></i> Barang Masuk
-                </a>
-                <a class="list-group-item border-0 py-2 {{ request()->routeIs('consumables.transactions.out') ? 'active' : '' }}" href="{{ route('consumables.transactions.out') }}">
-                    <i class="bi bi-box-arrow-up text-danger"></i> Barang Keluar
-                </a>
-            </div>
-        </div>
+            @endcan
 
-        <a class="list-group-item {{ request()->routeIs('stock-opnames.*') ? 'active' : '' }}" href="{{ route('stock-opnames.index') }}">
-            <i class="bi bi-clipboard-data" style="color: #fbbf24;"></i> <span>Stock Opname</span>
-        </a>
+            @can('master.manage')
+            <a class="list-group-item {{ request()->routeIs('stock-opnames.*') ? 'active' : '' }}" href="{{ route('stock-opnames.index') }}">
+                <i class="bi bi-clipboard-data" style="color: #fbbf24;"></i> <span>Stock Opname</span>
+            </a>
+            @endcan
+        @endif
 
-        <div class="sidebar-section-header">Master Data</div>
-        
-        <a class="list-group-item {{ request()->routeIs('categories.*') ? 'active' : '' }}" href="{{ route('categories.index') }}">
-            <i class="bi bi-tags" style="color: #818cf8;"></i> <span>Categories</span>
-        </a>
-        <a class="list-group-item {{ request()->routeIs('locations.*') ? 'active' : '' }}" href="{{ route('locations.index') }}">
-            <i class="bi bi-geo-alt" style="color: #fb7185;"></i> <span>Locations</span>
-        </a>
-        <a class="list-group-item {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
-            <i class="bi bi-truck" style="color: #2dd4bf;"></i> <span>Suppliers</span>
-        </a>
+        {{-- Master Data --}}
+        @can('master.manage')
+            <div class="sidebar-section-header">Master Data</div>
+            
+            <a class="list-group-item {{ request()->routeIs('categories.*') ? 'active' : '' }}" href="{{ route('categories.index') }}">
+                <i class="bi bi-tags" style="color: #818cf8;"></i> <span>Categories</span>
+            </a>
+            <a class="list-group-item {{ request()->routeIs('locations.*') ? 'active' : '' }}" href="{{ route('locations.index') }}">
+                <i class="bi bi-geo-alt" style="color: #fb7185;"></i> <span>Locations</span>
+            </a>
+            <a class="list-group-item {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
+                <i class="bi bi-truck" style="color: #2dd4bf;"></i> <span>Suppliers</span>
+            </a>
+        @endcan
 
-        <div class="sidebar-section-header">EHS Management</div>
-        <a class="list-group-item {{ request()->routeIs('admin.requests.*') ? 'active' : '' }}" href="{{ route('admin.requests.index') }}">
-            <i class="bi bi-card-checklist" style="color: #fda4af;"></i> <span>Manage Requests</span>
-        </a>
-        <a class="list-group-item {{ request()->routeIs('admin.damage_reports.*') ? 'active' : '' }}" href="{{ route('admin.damage_reports.index') }}">
-            <i class="bi bi-shield-exclamation" style="color: #fb7185;"></i> <span>Manage Damage Reports</span>
-        </a>
+        {{-- EHS Management --}}
+        @if(auth()->user()->can('requests.manage') || auth()->user()->can('damage_reports.manage'))
+            <div class="sidebar-section-header">EHS Management</div>
+            
+            @can('requests.manage')
+            <a class="list-group-item {{ request()->routeIs('admin.requests.*') ? 'active' : '' }}" href="{{ route('admin.requests.index') }}">
+                <i class="bi bi-card-checklist" style="color: #fda4af;"></i> <span>Manage Requests</span>
+            </a>
+            @endcan
+            
+            @can('damage_reports.manage')
+            <a class="list-group-item {{ request()->routeIs('admin.damage_reports.*') ? 'active' : '' }}" href="{{ route('admin.damage_reports.index') }}">
+                <i class="bi bi-shield-exclamation" style="color: #fb7185;"></i> <span>Manage Damage Reports</span>
+            </a>
+            @endcan
+        @endif
 
-        <div class="sidebar-section-header">Administration</div>
-        
-        <a class="list-group-item {{ request()->routeIs('admin.configs.*') ? 'active' : '' }}" href="{{ route('admin.configs.index') }}">
-            <i class="bi bi-gear" style="color: #a78bfa;"></i> <span>Config Master</span>
-        </a>
-        <a class="list-group-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
-            <i class="bi bi-people" style="color: #60a5fa;"></i> <span>Users</span>
-        </a>
-        <a class="list-group-item {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}">
-            <i class="bi bi-shield-lock" style="color: #fca5a5;"></i> <span>Roles</span>
-        </a>
-        <a class="list-group-item {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}" href="{{ route('admin.logs.index') }}">
-            <i class="bi bi-clock-history" style="color: #94a3b8;"></i> <span>Activity Logs</span>
-        </a>
-        @else
-        <div class="sidebar-section-header">EHS Request Portals</div>
-        
-        <a class="list-group-item {{ request()->routeIs('staff.requests.*') ? 'active' : '' }}" href="{{ route('staff.requests.index') }}">
-            <i class="bi bi-patch-question" style="color: #38bdf8;"></i> <span>Pinjam Alat & APD</span>
-        </a>
-        
-        <a class="list-group-item {{ request()->routeIs('staff.damage_reports.*') ? 'active' : '' }}" href="{{ route('staff.damage_reports.index') }}">
-            <i class="bi bi-shield-fill-exclamation" style="color: #f87171;"></i> <span>Lapor Kerusakan Alat</span>
-        </a>
-        @endrole
+        {{-- Administration --}}
+        @if(auth()->user()->can('config.manage') || auth()->user()->can('users.manage') || auth()->user()->can('roles.manage') || auth()->user()->hasRole('admin'))
+            <div class="sidebar-section-header">Administration</div>
+            
+            @can('config.manage')
+            <a class="list-group-item {{ request()->routeIs('admin.configs.*') ? 'active' : '' }}" href="{{ route('admin.configs.index') }}">
+                <i class="bi bi-gear" style="color: #a78bfa;"></i> <span>Config Master</span>
+            </a>
+            @endcan
+            
+            @can('users.manage')
+            <a class="list-group-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                <i class="bi bi-people" style="color: #60a5fa;"></i> <span>Users</span>
+            </a>
+            @endcan
+            
+            @can('roles.manage')
+            <a class="list-group-item {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}">
+                <i class="bi bi-shield-lock" style="color: #fca5a5;"></i> <span>Roles</span>
+            </a>
+            @endcan
+            
+            @role('admin')
+            <a class="list-group-item {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}" href="{{ route('admin.logs.index') }}">
+                <i class="bi bi-clock-history" style="color: #94a3b8;"></i> <span>Activity Logs</span>
+            </a>
+            @endrole
+        @endif
+
+        {{-- EHS Request Portals --}}
+        @if(auth()->user()->can('requests.view') || auth()->user()->can('damage_reports.view'))
+            <div class="sidebar-section-header">EHS Request Portals</div>
+            
+            @can('requests.view')
+            <a class="list-group-item {{ request()->routeIs('staff.requests.*') ? 'active' : '' }}" href="{{ route('staff.requests.index') }}">
+                <i class="bi bi-patch-question" style="color: #38bdf8;"></i> <span>Pinjam Alat & APD</span>
+            </a>
+            @endcan
+            
+            @can('damage_reports.view')
+            <a class="list-group-item {{ request()->routeIs('staff.damage_reports.*') ? 'active' : '' }}" href="{{ route('staff.damage_reports.index') }}">
+                <i class="bi bi-shield-fill-exclamation" style="color: #f87171;"></i> <span>Lapor Kerusakan Alat</span>
+            </a>
+            @endcan
+        @endif
     </div>
     
     <div class="sidebar-user-info mt-auto text-center" style="border-top: 1px solid rgba(255,255,255,0.06); padding: 1.25rem 1rem 1.75rem 1rem;">

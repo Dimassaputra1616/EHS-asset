@@ -62,12 +62,12 @@
     </div>
 
     <div class="col-xxl-3 col-xl-6 col-md-6">
-        @role('admin')
+        @can('users.manage')
         <a href="/admin/users" class="text-decoration-none d-block">
         @else
         <div class="d-block">
-        @endrole
-            <div class="stat-card" style="background: linear-gradient(135deg, color-mix(in srgb, var(--hse-red) 85%, black) 0%, color-mix(in srgb, var(--hse-red) 65%, black) 100%); cursor: {{ Auth::user()->hasRole('admin') ? 'pointer' : 'default' }};">
+        @endcan
+            <div class="stat-card" style="background: linear-gradient(135deg, color-mix(in srgb, var(--hse-red) 85%, black) 0%, color-mix(in srgb, var(--hse-red) 65%, black) 100%); cursor: {{ Auth::user()->can('users.manage') ? 'pointer' : 'default' }};">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-value">{{ \App\Models\User::count() }}</div>
@@ -78,11 +78,11 @@
                     </div>
                 </div>
             </div>
-        @role('admin')
+        @can('users.manage')
         </a>
         @else
         </div>
-        @endrole
+        @endcan
     </div>
 </div>
 

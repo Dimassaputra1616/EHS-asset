@@ -108,7 +108,7 @@
             <i class="bi bi-grid-1x2{{ request()->routeIs('dashboard') ? '-fill' : '' }}"></i>
             <span>Home</span>
         </a>
-        @role('admin')
+        @can('assets.view')
         <a href="{{ route('assets.index') }}" class="pwa-nav-item {{ request()->routeIs('assets.*') ? 'active' : '' }}">
             <i class="bi bi-box-seam{{ request()->routeIs('assets.*') ? '-fill' : '' }}"></i>
             <span>Assets</span>
@@ -118,12 +118,12 @@
             <i class="bi bi-patch-question{{ request()->routeIs('staff.requests.*') ? '-fill' : '' }}"></i>
             <span>Pinjam</span>
         </a>
-        @endrole
+        @endcan
         
         <!-- Empty placeholder to leave space for the floating standalone Scan FAB -->
         <div style="flex: 1;"></div>
         
-        @role('admin')
+        @can('consumables.view')
         <a href="{{ route('consumables.index') }}" class="pwa-nav-item {{ request()->routeIs('consumables.*') ? 'active' : '' }}">
             <i class="bi bi-basket{{ request()->routeIs('consumables.*') ? '-fill' : '' }}"></i>
             <span>Stock</span>
@@ -133,7 +133,7 @@
             <i class="bi bi-shield-fill-exclamation{{ request()->routeIs('staff.damage_reports.*') ? '-fill' : '' }}"></i>
             <span>Lapor</span>
         </a>
-        @endrole
+        @endcan
         <button class="pwa-nav-item" id="pwaMoreBtn" type="button">
             <i class="bi bi-three-dots"></i>
             <span>More</span>
@@ -251,7 +251,7 @@
                         </div>
 
                         <!-- Admin Only: Quick Status Update -->
-                        @role('admin')
+                        @can('assets.edit')
                         <div class="col-6">
                             <button type="button" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-quick-update" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;" data-bs-toggle="collapse" data-bs-target="#sac-admin-panel">
                                 <div class="p-2 bg-danger bg-opacity-15 rounded-3 mb-3 border border-danger border-opacity-10" style="width: fit-content;">
@@ -270,11 +270,11 @@
                                 <div class="fw-bold text-white-50 small" style="font-size: 0.75rem;">HSE Guard Portal</div>
                             </div>
                         </div>
-                        @endrole
+                        @endcan
                     </div>
-
+ 
                     <!-- Admin Quick Update Collapse Panel -->
-                    @role('admin')
+                    @can('assets.edit')
                     <div class="collapse mt-3" id="sac-admin-panel">
                         <div class="p-3 rounded-4 border border-secondary border-opacity-20" style="background: rgba(255,255,255,0.02);">
                             <h6 class="fw-bold text-white mb-3 small d-flex align-items-center gap-1">
@@ -303,7 +303,7 @@
                             </form>
                         </div>
                     </div>
-                    @endrole
+                    @endcan
                 </div>
             </div>
         </div>
@@ -317,8 +317,7 @@
             <span class="fw-bold">More Options</span>
             <button class="btn-close btn-close-sm" id="pwaMoreClose"></button>
         </div>
-        <div class="pwa-more-grid">
-            @role('admin')
+            @can('master.manage')
             <a href="{{ route('categories.index') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #C0392B, #E74C3C);">
                     <i class="bi bi-tags-fill"></i>
@@ -337,6 +336,8 @@
                 </div>
                 <span>Suppliers</span>
             </a>
+            @endcan
+            @can('consumables.view')
             <a href="{{ route('consumables.transactions.in') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #27AE60, #229954);">
                     <i class="bi bi-box-arrow-in-down"></i>
@@ -349,53 +350,61 @@
                 </div>
                 <span>Stock Out</span>
             </a>
+            @endcan
+            @can('master.manage')
             <a href="{{ route('stock-opnames.index') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #F1C40F, #F39C12);">
                     <i class="bi bi-clipboard-data"></i>
                 </div>
                 <span>Stock Opname</span>
             </a>
-            @endrole
+            @endcan
             <a href="{{ route('profile.edit') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #8E44AD, #7D3C98);">
                     <i class="bi bi-person-fill"></i>
                 </div>
                 <span>Profile</span>
             </a>
-            @role('admin')
+            @can('users.manage')
             <a href="{{ route('admin.users.index') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #2C3E50, #34495E);">
                     <i class="bi bi-people-fill"></i>
                 </div>
                 <span>Users</span>
             </a>
+            @endcan
+            @can('config.manage')
             <a href="{{ route('admin.configs.index') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #7F8C8D, #95A5A6);">
                     <i class="bi bi-gear-fill"></i>
                 </div>
                 <span>Config</span>
             </a>
+            @endcan
+            @role('admin')
             <a href="{{ route('admin.logs.index') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #1ABC9C, #16A085);">
                     <i class="bi bi-clock-history"></i>
                 </div>
                 <span>Logs</span>
             </a>
-            @else
-            <!-- Non-admin/Staff Quick Access Items in More Menu -->
+            @endrole
+            @can('requests.view')
             <a href="{{ route('staff.requests.index') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #3498DB, #2980B9);">
                     <i class="bi bi-patch-question-fill"></i>
                 </div>
                 <span>History Pinjam</span>
             </a>
+            @endcan
+            @can('damage_reports.view')
             <a href="{{ route('staff.damage_reports.index') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #E74C3C, #C0392B);">
                     <i class="bi bi-shield-fill-exclamation"></i>
                 </div>
                 <span>Laporan Rusak</span>
             </a>
-            @endrole
+            @endcan
         </div>
         <!-- PWA Drawer Sign Out Button (Opsi 1) -->
         <div class="pwa-more-footer p-3 border-top bg-light">
