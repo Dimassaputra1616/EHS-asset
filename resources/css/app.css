@@ -177,8 +177,6 @@ body.pwa-menu-open {
    ============================ */
 #sidebar-wrapper {
     height: 100vh;
-    overflow-y: auto;
-    overscroll-behavior: contain; /* Prevents scroll chaining to body when sidebar scroll reaches limit */
     width: var(--sidebar-width);
     background: linear-gradient(180deg, #1c1515 0%, #291818 100%);
     transition: all var(--transition-smooth);
@@ -203,6 +201,7 @@ body.pwa-menu-open {
     gap: 0.75rem;
     min-height: var(--topbar-height);
     text-transform: uppercase;
+    flex-shrink: 0;
 }
 
 #sidebar-wrapper .sidebar-heading .sidebar-logo {
@@ -233,6 +232,8 @@ body.pwa-menu-open {
     width: var(--sidebar-width);
     padding: 0.5rem 0.75rem;
     flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 /* Section Headers */
