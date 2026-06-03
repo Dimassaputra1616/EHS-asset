@@ -2312,72 +2312,136 @@ div.dataTables_wrapper div.dataTables_info {
 }
 
 /* ==========================================================
-   HYPER-PREMIUM DATATABLES PROCESSING INDICATOR OVERRIDE
+   GLOBAL PREMIUM PAGE LOADER (SPOTLIGHT GLASSMORPHISM LOADER)
    ========================================================== */
+
+/* Completely hide the old/buggy Yajra DataTables processing element */
 div.dataTables_wrapper div.dataTables_processing {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 200px !important;
-    height: 54px !important;
-    margin-left: -100px !important;
-    margin-top: -27px !important;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.9) !important;
-    backdrop-filter: blur(15px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.6) !important;
-    border-radius: 30px !important;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 
-                0 1px 3px rgba(0, 0, 0, 0.02),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
-    z-index: 1050 !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 0.65rem !important;
-    color: var(--text-main) !important;
-    font-weight: 700 !important;
-    font-size: 0.82rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-    animation: processingEntrance 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
-    text-shadow: none !important;
-    padding: 0 !important;
-}
-
-/* Conditionally apply flex only when DataTable show/hide mechanism does not hide it */
-div.dataTables_wrapper div.dataTables_processing:not([style*="display: none"]):not([style*="display:none"]) {
-    display: flex !important;
-}
-
-/* Hide default library blue bouncing dots */
-div.dataTables_wrapper div.dataTables_processing div {
     display: none !important;
 }
 
-/* Premium Rotating Glowing Liquid Core Ring */
-div.dataTables_wrapper div.dataTables_processing::before {
-    content: '' !important;
-    display: inline-block !important;
-    width: 18px !important;
-    height: 18px !important;
-    border: 2.5px solid rgba(192, 57, 43, 0.08) !important;
-    border-radius: 50% !important;
-    border-top-color: var(--hse-red) !important;
-    border-right-color: var(--hse-red-light) !important;
-    animation: spin 0.6s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite !important;
-    box-shadow: 0 0 8px rgba(192, 57, 43, 0.2) !important;
+/* New Modern Global Loader Overlay */
+.global-loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.22); /* Smooth dark backdrop overlay */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes processingEntrance {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -40%) scale(0.92);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
+.global-loader-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.global-loader-card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(25px) saturate(190%);
+    -webkit-backdrop-filter: blur(25px) saturate(190%);
+    border: 1.5px solid color-mix(in srgb, var(--hse-red) 18%, rgba(255, 255, 255, 0.7));
+    padding: 2rem 2.5rem;
+    border-radius: 28px;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.08),
+        0 0 40px color-mix(in srgb, var(--hse-red) 8%, transparent),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.global-loader-overlay.active .global-loader-card {
+    transform: scale(1);
+}
+
+/* Dual-Ring Spinner Wrapper */
+.global-loader-spinner-wrapper {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Outer Spinning Ring */
+.global-loader-spinner-outer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3.5px solid color-mix(in srgb, var(--hse-red) 8%, transparent);
+    border-radius: 50%;
+    border-top-color: var(--hse-red);
+    border-right-color: color-mix(in srgb, var(--hse-red) 45%, white);
+    animation: spin 0.85s linear infinite;
+    box-shadow: 0 0 18px color-mix(in srgb, var(--hse-red) 15%, transparent);
+}
+
+/* Inner Opposite-Spinning Ring */
+.global-loader-spinner-inner {
+    position: absolute;
+    width: 65%;
+    height: 65%;
+    border: 2.5px solid color-mix(in srgb, var(--hse-red) 8%, transparent);
+    border-radius: 50%;
+    border-bottom-color: var(--hse-red);
+    border-left-color: color-mix(in srgb, var(--hse-red) 40%, white);
+    animation: spin-reverse 0.65s linear infinite;
+}
+
+.global-loader-text {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: pulseText 1.6s ease-in-out infinite;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Modern dots animation */
+.global-loader-text::after {
+    content: '...';
+    display: inline-block;
+    width: 12px;
+    text-align: left;
+    animation: loadingDots 1.6s steps(4, end) infinite;
+}
+
+@keyframes pulseText {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+
+@keyframes loadingDots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
 }
 
 

@@ -914,5 +914,34 @@
  
         @yield('scripts')
         @stack('scripts')
+
+        <!-- Global Premium Page Loader -->
+        <div id="global-page-loader" class="global-loader-overlay">
+            <div class="global-loader-card">
+                <div class="global-loader-spinner-wrapper">
+                    <div class="global-loader-spinner-outer"></div>
+                    <div class="global-loader-spinner-inner"></div>
+                </div>
+                <div class="global-loader-text">Loading Data</div>
+            </div>
+        </div>
+
+        <script>
+            // Global DataTable Processing Event Listener
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof $ !== 'undefined') {
+                    $(document).on('processing.dt', function(e, settings, processing) {
+                        const loader = document.getElementById('global-page-loader');
+                        if (loader) {
+                            if (processing) {
+                                loader.classList.add('active');
+                            } else {
+                                loader.classList.remove('active');
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

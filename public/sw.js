@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hse-asset-cache-v3';
+const CACHE_NAME = 'hse-asset-cache-v4';
 const OFFLINE_URL = '/offline.html';
 
 const ASSETS_TO_CACHE = [
