@@ -309,6 +309,11 @@
         </div>
     </div>
 
+    <!-- PWA Logout Form -->
+    <form id="pwa-logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+        @csrf
+    </form>
+
     <!-- PWA More Menu Overlay (Mobile Only) -->
     <div class="pwa-more-overlay d-lg-none" id="pwaMoreOverlay"></div>
     <div class="pwa-more-menu d-lg-none" id="pwaMoreMenu">
@@ -410,6 +415,15 @@
                 ];
             }
             
+            // Add Logout Option at the end of PWA menu drawer
+            $moreItems[] = [
+                'url' => route('logout'),
+                'icon' => 'bi-box-arrow-right',
+                'bg' => 'linear-gradient(135deg, #e11d48, #be123c)', /* Rose/red gradient */
+                'label' => 'Logout',
+                'onclick' => "event.preventDefault(); document.getElementById('pwa-logout-form').submit();"
+            ];
+            
             $chunks = array_chunk($moreItems, 8);
         @endphp
 
@@ -418,7 +432,7 @@
                 <div class="pwa-more-slide">
                     <div class="pwa-more-grid">
                         @foreach($chunk as $item)
-                            <a href="{{ $item['url'] }}" class="pwa-more-item">
+                            <a href="{{ $item['url'] }}" class="pwa-more-item" @if(isset($item['onclick'])) onclick="{!! $item['onclick'] !!}" @endif>
                                 <div class="pwa-more-icon" style="background: {{ $item['bg'] }};">
                                     <i class="bi {{ $item['icon'] }}"></i>
                                 </div>
