@@ -33,37 +33,47 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Assets (Protected by permissions)
     Route::middleware('permission:assets.view')->group(function () {
         Route::get('assets/export', [AssetController::class, 'export'])->name('assets.export');
-        Route::resource('assets', AssetController::class)->only(['index', 'show']);
+        Route::get('assets', [AssetController::class, 'index'])->name('assets.index');
     });
     Route::middleware('permission:assets.create')->group(function () {
         Route::get('assets/generate-code/{category_id}', [AssetController::class, 'generateCode'])->name('assets.generate-code');
-        Route::resource('assets', AssetController::class)->only(['create', 'store']);
+        Route::get('assets/create', [AssetController::class, 'create'])->name('assets.create');
+        Route::post('assets', [AssetController::class, 'store'])->name('assets.store');
     });
     Route::middleware('permission:assets.edit')->group(function () {
-        Route::resource('assets', AssetController::class)->only(['edit', 'update']);
+        Route::get('assets/{asset}/edit', [AssetController::class, 'edit'])->name('assets.edit');
+        Route::match(['put', 'patch'], 'assets/{asset}', [AssetController::class, 'update'])->name('assets.update');
     });
     Route::middleware('permission:assets.delete')->group(function () {
-        Route::resource('assets', AssetController::class)->only(['destroy']);
+        Route::delete('assets/{asset}', [AssetController::class, 'destroy'])->name('assets.destroy');
+    });
+    Route::middleware('permission:assets.view')->group(function () {
+        Route::get('assets/{asset}', [AssetController::class, 'show'])->name('assets.show');
     });
 
     // Consumables (Protected by permissions)
     Route::middleware('permission:consumables.view')->group(function () {
         Route::get('consumables/export', [ConsumableController::class, 'export'])->name('consumables.export');
-        Route::resource('consumables', ConsumableController::class)->only(['index', 'show']);
+        Route::get('consumables', [ConsumableController::class, 'index'])->name('consumables.index');
         Route::get('consumables/transactions/in', [ConsumableTransactionController::class, 'indexIn'])->name('consumables.transactions.in');
         Route::get('consumables/transactions/out', [ConsumableTransactionController::class, 'indexOut'])->name('consumables.transactions.out');
     });
     Route::middleware('permission:consumables.create')->group(function () {
         Route::get('consumables/generate-code/{category_id}', [ConsumableController::class, 'generateCode'])->name('consumables.generate-code');
-        Route::resource('consumables', ConsumableController::class)->only(['create', 'store']);
+        Route::get('consumables/create', [ConsumableController::class, 'create'])->name('consumables.create');
+        Route::post('consumables', [ConsumableController::class, 'store'])->name('consumables.store');
         Route::get('consumables/transactions/create', [ConsumableTransactionController::class, 'create'])->name('consumables.transactions.create');
         Route::post('consumables/transactions', [ConsumableTransactionController::class, 'store'])->name('consumables.transactions.store');
     });
     Route::middleware('permission:consumables.edit')->group(function () {
-        Route::resource('consumables', ConsumableController::class)->only(['edit', 'update']);
+        Route::get('consumables/{consumable}/edit', [ConsumableController::class, 'edit'])->name('consumables.edit');
+        Route::match(['put', 'patch'], 'consumables/{consumable}', [ConsumableController::class, 'update'])->name('consumables.update');
     });
     Route::middleware('permission:consumables.delete')->group(function () {
-        Route::resource('consumables', ConsumableController::class)->only(['destroy']);
+        Route::delete('consumables/{consumable}', [ConsumableController::class, 'destroy'])->name('consumables.destroy');
+    });
+    Route::middleware('permission:consumables.view')->group(function () {
+        Route::get('consumables/{consumable}', [ConsumableController::class, 'show'])->name('consumables.show');
     });
 
     // Stock Opnames & Master Data (Protected by permissions)
