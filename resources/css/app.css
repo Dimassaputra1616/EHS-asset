@@ -1244,6 +1244,45 @@ div.dataTables_wrapper div.dataTables_info {
     opacity: 1;
 }
 
+/* Responsive Toast Layout for Mobile / PWA Viewports (iOS-style Banner) */
+@media (max-width: 767.98px) {
+    .toast-container {
+        top: 12px !important;
+        bottom: auto !important;
+        left: 12px !important;
+        right: 12px !important;
+        width: auto !important;
+        max-width: none !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        z-index: 1090 !important; /* Stand above everything else */
+    }
+    
+    .toast-container .alert-modern {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        box-shadow: 
+            0 10px 25px -5px rgba(0, 0, 0, 0.1),
+            0 8px 16px -6px rgba(0, 0, 0, 0.05) !important;
+        animation: toastSlideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+        border-radius: 16px !important; /* Slightly more rounded for premium mobile look */
+    }
+}
+
+@keyframes toastSlideDown {
+    from {
+        transform: translateY(-40px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
 /* ============================
    PAGE HEADER + BREADCRUMB
    ============================ */
