@@ -522,7 +522,7 @@
             {{ config('app.name', 'HSE Asset Management') }}
         </div>
         <div style="font-size: 0.65rem; color: #ffffff; margin-top: 4px; font-weight: 700; letter-spacing: 2px; opacity: 0.65; text-shadow: 1px 1px 2px rgba(0,0,0,0.9);">
-            VERSION 1.0.0
+            VERSION {{ config('app.app_version', '1.0.0') }}
         </div>
     </div>
 </div>

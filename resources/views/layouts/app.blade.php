@@ -103,24 +103,37 @@
             </div>
         </div>
 
-    <!-- PWA Bottom Navigation Bar (Mobile Only) -->
     <nav class="pwa-bottom-nav d-lg-none" id="pwaBottomNav">
         <a href="{{ route('dashboard') }}" class="pwa-nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <i class="bi bi-grid-1x2{{ request()->routeIs('dashboard') ? '-fill' : '' }}"></i>
             <span>Home</span>
         </a>
+        @role('admin')
         <a href="{{ route('assets.index') }}" class="pwa-nav-item {{ request()->routeIs('assets.*') ? 'active' : '' }}">
             <i class="bi bi-box-seam{{ request()->routeIs('assets.*') ? '-fill' : '' }}"></i>
             <span>Assets</span>
         </a>
+        @else
+        <a href="{{ route('staff.requests.index') }}" class="pwa-nav-item {{ request()->routeIs('staff.requests.*') ? 'active' : '' }}">
+            <i class="bi bi-patch-question{{ request()->routeIs('staff.requests.*') ? '-fill' : '' }}"></i>
+            <span>Pinjam</span>
+        </a>
+        @endrole
         
         <!-- Empty placeholder to leave space for the floating standalone Scan FAB -->
         <div style="flex: 1;"></div>
         
+        @role('admin')
         <a href="{{ route('consumables.index') }}" class="pwa-nav-item {{ request()->routeIs('consumables.*') ? 'active' : '' }}">
             <i class="bi bi-basket{{ request()->routeIs('consumables.*') ? '-fill' : '' }}"></i>
             <span>Stock</span>
         </a>
+        @else
+        <a href="{{ route('staff.damage_reports.index') }}" class="pwa-nav-item {{ request()->routeIs('staff.damage_reports.*') ? 'active' : '' }}">
+            <i class="bi bi-shield-fill-exclamation{{ request()->routeIs('staff.damage_reports.*') ? '-fill' : '' }}"></i>
+            <span>Lapor</span>
+        </a>
+        @endrole
         <button class="pwa-nav-item" id="pwaMoreBtn" type="button">
             <i class="bi bi-three-dots"></i>
             <span>More</span>
@@ -305,6 +318,7 @@
             <button class="btn-close btn-close-sm" id="pwaMoreClose"></button>
         </div>
         <div class="pwa-more-grid">
+            @role('admin')
             <a href="{{ route('categories.index') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #C0392B, #E74C3C);">
                     <i class="bi bi-tags-fill"></i>
@@ -341,6 +355,7 @@
                 </div>
                 <span>Stock Opname</span>
             </a>
+            @endrole
             <a href="{{ route('profile.edit') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #8E44AD, #7D3C98);">
                     <i class="bi bi-person-fill"></i>
@@ -365,6 +380,20 @@
                     <i class="bi bi-clock-history"></i>
                 </div>
                 <span>Logs</span>
+            </a>
+            @else
+            <!-- Non-admin/Staff Quick Access Items in More Menu -->
+            <a href="{{ route('staff.requests.index') }}" class="pwa-more-item">
+                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #3498DB, #2980B9);">
+                    <i class="bi bi-patch-question-fill"></i>
+                </div>
+                <span>History Pinjam</span>
+            </a>
+            <a href="{{ route('staff.damage_reports.index') }}" class="pwa-more-item">
+                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #E74C3C, #C0392B);">
+                    <i class="bi bi-shield-fill-exclamation"></i>
+                </div>
+                <span>Laporan Rusak</span>
             </a>
             @endrole
         </div>

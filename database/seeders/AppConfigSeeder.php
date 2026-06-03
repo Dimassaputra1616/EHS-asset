@@ -23,6 +23,12 @@ class AppConfigSeeder extends Seeder
                 'group' => 'general',
             ],
             [
+                'key' => 'app_version',
+                'value' => '1.0.0',
+                'label' => 'Application Version',
+                'group' => 'general',
+            ],
+            [
                 'key' => 'company_name',
                 'value' => 'HSE Guard Corp',
                 'label' => 'Company Name',

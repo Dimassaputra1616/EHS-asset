@@ -236,7 +236,7 @@
                                             @foreach($items as $config)
                                             @php
                                                 $colClass = 'col-12';
-                                                if (in_array($config->key, ['app_name', 'company_name', 'asset_code_prefix', 'consumable_code_prefix', 'currency_symbol', 'low_stock_threshold'])) {
+                                                if (in_array($config->key, ['app_name', 'app_version', 'company_name', 'asset_code_prefix', 'consumable_code_prefix', 'currency_symbol', 'low_stock_threshold'])) {
                                                     $colClass = 'col-md-6';
                                                 }
                                             @endphp
@@ -327,7 +327,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
+ 
                                                                 <!-- Style 2: Centered Card -->
                                                                 <div class="col-md-6">
                                                                     <div class="login-style-card h-100 p-3 {{ $config->value == 'centered-card' ? 'active' : '' }}" onclick="selectLoginStyle('centered-card', this)">
@@ -357,7 +357,7 @@
                                                                         </div>
                                                                         <div class="pt-3 text-center">
                                                                             <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.85rem;">Centered Card</h6>
-                                                                            <p class="text-muted mb-0" style="font-size: 0.72rem;">Glassmorphism card di tengah dengan background blur dan floating icons.</p>
+                                                                            <p class="text-muted mb-0" style="font-size: 0.72rem;">Glassmorphism card di tengah dengan background blur and floating icons.</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -387,21 +387,24 @@
                                                                  </label>
                                                              </div>
                                                         @elseif($config->key == 'app_description' || Str::contains($config->key, 'text'))
-                                                            <textarea name="{{ $config->key }}" id="{{ $config->key }}" class="form-control form-control-lg mt-1 fs-6" rows="3">{{ $config->value }}</textarea>
-                                                            @if($config->key == 'copyright_text')
-                                                                <div class="small text-muted mt-1.5">Teks hak cipta / footer yang muncul pada halaman login / splash screen.</div>
-                                                            @endif
+                                                             <textarea name="{{ $config->key }}" id="{{ $config->key }}" class="form-control form-control-lg mt-1 fs-6" rows="3">{{ $config->value }}</textarea>
+                                                             @if($config->key == 'copyright_text')
+                                                                 <div class="small text-muted mt-1.5">Teks hak cipta / footer yang muncul pada halaman login / splash screen.</div>
+                                                             @endif
                                                         @elseif($config->key == 'low_stock_threshold')
                                                              <input type="number" name="{{ $config->key }}" id="{{ $config->key }}" class="form-control form-control-lg mt-1 fs-6" value="{{ $config->value }}" min="1" max="1000" style="max-width: 150px;">
                                                              <div class="small text-muted mt-1.5">Batas minimum stok barang habis pakai (consumables) sebelum peringatan "LOW STOCK" diaktifkan secara otomatis.</div>
                                                         @elseif($config->key == 'currency_symbol')
                                                              <input type="text" name="{{ $config->key }}" id="{{ $config->key }}" class="form-control form-control-lg mt-1 fs-6" value="{{ $config->value }}" placeholder="Rp" style="max-width: 120px;">
                                                              <div class="small text-muted mt-1.5">Simbol mata uang yang akan digunakan pada seluruh rincian biaya pengadaan aset.</div>
+                                                        @elseif($config->key == 'app_version')
+                                                             <input type="text" name="{{ $config->key }}" id="{{ $config->key }}" class="form-control form-control-lg mt-1 fs-6" value="{{ $config->value }}" placeholder="1.0.0" style="max-width: 180px;">
+                                                             <div class="small text-muted mt-1.5">Versi aplikasi yang akan ditampilkan di bagian bawah sidebar navigasi.</div>
                                                         @elseif($config->key == 'asset_code_prefix' || $config->key == 'consumable_code_prefix')
                                                              <input type="text" name="{{ $config->key }}" id="{{ $config->key }}" class="form-control form-control-lg mt-1 fs-6 font-monospace" value="{{ $config->value }}" placeholder="AST" style="max-width: 180px; text-transform: uppercase;">
                                                              <div class="small text-muted mt-1.5">Prefiks awalan untuk penomoran kode otomatis (contoh: {{ $config->key == 'asset_code_prefix' ? 'AST' : 'CSM' }}-KATEGORI-001).</div>
                                                         @else
-                                                            <input type="text" name="{{ $config->key }}" id="{{ $config->key }}" class="form-control form-control-lg mt-1 fs-6" value="{{ $config->value }}">
+                                                             <input type="text" name="{{ $config->key }}" id="{{ $config->key }}" class="form-control form-control-lg mt-1 fs-6" value="{{ $config->value }}">
                                                         @endif
                                                     </div>
                                                 </div>
