@@ -317,6 +317,7 @@
             <span class="fw-bold">More Options</span>
             <button class="btn-close btn-close-sm" id="pwaMoreClose"></button>
         </div>
+        <div class="pwa-more-grid">
             @can('master.manage')
             <a href="{{ route('categories.index') }}" class="pwa-more-item">
                 <div class="pwa-more-icon" style="background: linear-gradient(135deg, #C0392B, #E74C3C);">
@@ -693,7 +694,8 @@
                         const config = {
                             fps: 10,
                             qrbox: function(w, h) {
-                                return { width: Math.floor(w * 0.75), height: 150 };
+                                let size = Math.floor(Math.min(w, h) * 0.7);
+                                return { width: size, height: size };
                             },
                             aspectRatio: 1.0
                         };

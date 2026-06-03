@@ -367,12 +367,10 @@
             const config = { 
                 fps: 30, // 3x higher frame rate for split-second captures
                 qrbox: function(width, height) {
-                    return {
-                        width: Math.floor(width * 0.85), // Widen scan frame for horizontal 1D barcodes
-                        height: Math.floor(height * 0.6)
-                    };
+                    let size = Math.floor(Math.min(width, height) * 0.7);
+                    return { width: size, height: size };
                 },
-                aspectRatio: 1.333333,
+                aspectRatio: 1.0,
                 formatsToSupport: supportedFormats, // Explicitly tell scanner to listen to CODE128 barcodes!
                 experimentalFeatures: {
                     useBarCodeDetectorIfSupported: true // Activate browser native hardware accelerated scanning engine
