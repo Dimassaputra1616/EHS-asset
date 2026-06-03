@@ -415,6 +415,16 @@
                 ];
             }
             
+            // Add PWA Install Application Option (Only shown if beforeinstallprompt is active)
+            $moreItems[] = [
+                'url' => '#',
+                'icon' => 'bi-download',
+                'bg' => 'linear-gradient(135deg, #10b981, #059669)', /* Emerald gradient */
+                'label' => 'Install App',
+                'id' => 'pwa-install-item',
+                'style' => 'display: none;'
+            ];
+
             // Add Logout Option at the end of PWA menu drawer
             $moreItems[] = [
                 'url' => route('logout'),
@@ -432,7 +442,11 @@
                 <div class="pwa-more-slide">
                     <div class="pwa-more-grid">
                         @foreach($chunk as $item)
-                            <a href="{{ $item['url'] }}" class="pwa-more-item" @if(isset($item['onclick'])) onclick="{!! $item['onclick'] !!}" @endif>
+                            <a href="{{ $item['url'] }}" 
+                               class="pwa-more-item"
+                               @if(isset($item['id'])) id="{{ $item['id'] }}" @endif
+                               @if(isset($item['style'])) style="{{ $item['style'] }}" @endif
+                               @if(isset($item['onclick'])) onclick="{!! $item['onclick'] !!}" @endif>
                                 <div class="pwa-more-icon" style="background: {{ $item['bg'] }};">
                                     <i class="bi {{ $item['icon'] }}"></i>
                                 </div>
@@ -1042,6 +1056,48 @@
                         });
                     }
                 });
+
+                // PWA Install Prompt Listener
+                let deferredPrompt = null;
+                const installItem = document.getElementById('pwa-install-item');
+
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    // Prevent Chrome 67 and earlier from automatically showing the prompt
+                    e.preventDefault();
+                    // Stash the event so it can be triggered later
+                    deferredPrompt = e;
+                    // Show the install button in the PWA More Menu
+                    if (installItem) {
+                        installItem.style.setProperty('display', 'flex', 'important');
+                    }
+                });
+
+                if (installItem) {
+                    installItem.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (deferredPrompt) {
+                            // Show the install prompt
+                            deferredPrompt.prompt();
+                            // Wait for the user to respond to the prompt
+                            deferredPrompt.userChoice.then((choiceResult) => {
+                                if (choiceResult.outcome === 'accepted') {
+                                    console.log('User accepted the PWA install prompt');
+                                } else {
+                                    console.log('User dismissed the PWA install prompt');
+                                }
+                                deferredPrompt = null;
+                                installItem.style.setProperty('display', 'none', 'important');
+                            });
+                        }
+                    });
+                }
+
+                // Hide install button if already running in standalone mode (installed)
+                if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+                    if (installItem) {
+                        installItem.style.setProperty('display', 'none', 'important');
+                    }
+                }
             });
         </script>
     </body>
