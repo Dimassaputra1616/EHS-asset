@@ -317,96 +317,126 @@
             <span class="fw-bold">More Options</span>
             <button class="btn-close btn-close-sm" id="pwaMoreClose"></button>
         </div>
-        <div class="pwa-more-grid">
-            @can('master.manage')
-            <a href="{{ route('categories.index') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #C0392B, #E74C3C);">
-                    <i class="bi bi-tags-fill"></i>
+
+        @php
+            $moreItems = [];
+            
+            if (auth()->user()->can('master.manage')) {
+                $moreItems[] = [
+                    'url' => route('categories.index'),
+                    'icon' => 'bi-tags-fill',
+                    'bg' => 'linear-gradient(135deg, #C0392B, #E74C3C)',
+                    'label' => 'Categories'
+                ];
+                $moreItems[] = [
+                    'url' => route('locations.index'),
+                    'icon' => 'bi-geo-alt-fill',
+                    'bg' => 'linear-gradient(135deg, #3498DB, #2980B9)',
+                    'label' => 'Locations'
+                ];
+                $moreItems[] = [
+                    'url' => route('suppliers.index'),
+                    'icon' => 'bi-truck',
+                    'bg' => 'linear-gradient(135deg, #E67E22, #D35400)',
+                    'label' => 'Suppliers'
+                ];
+            }
+            if (auth()->user()->can('consumables.view')) {
+                $moreItems[] = [
+                    'url' => route('consumables.transactions.in'),
+                    'icon' => 'bi-box-arrow-in-down',
+                    'bg' => 'linear-gradient(135deg, #27AE60, #229954)',
+                    'label' => 'Stock In'
+                ];
+                $moreItems[] = [
+                    'url' => route('consumables.transactions.out'),
+                    'icon' => 'bi-box-arrow-up',
+                    'bg' => 'linear-gradient(135deg, #E74C3C, #C0392B)',
+                    'label' => 'Stock Out'
+                ];
+            }
+            if (auth()->user()->can('master.manage')) {
+                $moreItems[] = [
+                    'url' => route('stock-opnames.index'),
+                    'icon' => 'bi-clipboard-data',
+                    'bg' => 'linear-gradient(135deg, #F1C40F, #F39C12)',
+                    'label' => 'Stock Opname'
+                ];
+            }
+            $moreItems[] = [
+                'url' => route('profile.edit'),
+                'icon' => 'bi-person-fill',
+                'bg' => 'linear-gradient(135deg, #8E44AD, #7D3C98)',
+                'label' => 'Profile'
+            ];
+            if (auth()->user()->can('users.manage')) {
+                $moreItems[] = [
+                    'url' => route('admin.users.index'),
+                    'icon' => 'bi-people-fill',
+                    'bg' => 'linear-gradient(135deg, #2C3E50, #34495E)',
+                    'label' => 'Users'
+                ];
+            }
+            if (auth()->user()->can('config.manage')) {
+                $moreItems[] = [
+                    'url' => route('admin.configs.index'),
+                    'icon' => 'bi-gear-fill',
+                    'bg' => 'linear-gradient(135deg, #7F8C8D, #95A5A6)',
+                    'label' => 'Config'
+                ];
+            }
+            if (auth()->user()->hasRole('admin')) {
+                $moreItems[] = [
+                    'url' => route('admin.logs.index'),
+                    'icon' => 'bi-clock-history',
+                    'bg' => 'linear-gradient(135deg, #1ABC9C, #16A085)',
+                    'label' => 'Logs'
+                ];
+            }
+            if (auth()->user()->can('requests.view')) {
+                $moreItems[] = [
+                    'url' => route('staff.requests.index'),
+                    'icon' => 'bi-patch-question-fill',
+                    'bg' => 'linear-gradient(135deg, #3498DB, #2980B9)',
+                    'label' => 'History Pinjam'
+                ];
+            }
+            if (auth()->user()->can('damage_reports.view')) {
+                $moreItems[] = [
+                    'url' => route('staff.damage_reports.index'),
+                    'icon' => 'bi-shield-fill-exclamation',
+                    'bg' => 'linear-gradient(135deg, #E74C3C, #C0392B)',
+                    'label' => 'Laporan Rusak'
+                ];
+            }
+            
+            $chunks = array_chunk($moreItems, 8);
+        @endphp
+
+        <div class="pwa-more-carousel" id="pwaMoreCarousel">
+            @foreach($chunks as $pageIndex => $chunk)
+                <div class="pwa-more-slide">
+                    <div class="pwa-more-grid">
+                        @foreach($chunk as $item)
+                            <a href="{{ $item['url'] }}" class="pwa-more-item">
+                                <div class="pwa-more-icon" style="background: {{ $item['bg'] }};">
+                                    <i class="bi {{ $item['icon'] }}"></i>
+                                </div>
+                                <span>{{ $item['label'] }}</span>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
-                <span>Categories</span>
-            </a>
-            <a href="{{ route('locations.index') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #3498DB, #2980B9);">
-                    <i class="bi bi-geo-alt-fill"></i>
-                </div>
-                <span>Locations</span>
-            </a>
-            <a href="{{ route('suppliers.index') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #E67E22, #D35400);">
-                    <i class="bi bi-truck"></i>
-                </div>
-                <span>Suppliers</span>
-            </a>
-            @endcan
-            @can('consumables.view')
-            <a href="{{ route('consumables.transactions.in') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #27AE60, #229954);">
-                    <i class="bi bi-box-arrow-in-down"></i>
-                </div>
-                <span>Stock In</span>
-            </a>
-            <a href="{{ route('consumables.transactions.out') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #E74C3C, #C0392B);">
-                    <i class="bi bi-box-arrow-up"></i>
-                </div>
-                <span>Stock Out</span>
-            </a>
-            @endcan
-            @can('master.manage')
-            <a href="{{ route('stock-opnames.index') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #F1C40F, #F39C12);">
-                    <i class="bi bi-clipboard-data"></i>
-                </div>
-                <span>Stock Opname</span>
-            </a>
-            @endcan
-            <a href="{{ route('profile.edit') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #8E44AD, #7D3C98);">
-                    <i class="bi bi-person-fill"></i>
-                </div>
-                <span>Profile</span>
-            </a>
-            @can('users.manage')
-            <a href="{{ route('admin.users.index') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #2C3E50, #34495E);">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-                <span>Users</span>
-            </a>
-            @endcan
-            @can('config.manage')
-            <a href="{{ route('admin.configs.index') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #7F8C8D, #95A5A6);">
-                    <i class="bi bi-gear-fill"></i>
-                </div>
-                <span>Config</span>
-            </a>
-            @endcan
-            @role('admin')
-            <a href="{{ route('admin.logs.index') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #1ABC9C, #16A085);">
-                    <i class="bi bi-clock-history"></i>
-                </div>
-                <span>Logs</span>
-            </a>
-            @endrole
-            @can('requests.view')
-            <a href="{{ route('staff.requests.index') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #3498DB, #2980B9);">
-                    <i class="bi bi-patch-question-fill"></i>
-                </div>
-                <span>History Pinjam</span>
-            </a>
-            @endcan
-            @can('damage_reports.view')
-            <a href="{{ route('staff.damage_reports.index') }}" class="pwa-more-item">
-                <div class="pwa-more-icon" style="background: linear-gradient(135deg, #E74C3C, #C0392B);">
-                    <i class="bi bi-shield-fill-exclamation"></i>
-                </div>
-                <span>Laporan Rusak</span>
-            </a>
-            @endcan
+            @endforeach
         </div>
+
+        @if(count($chunks) > 1)
+            <div class="pwa-more-dots">
+                @foreach($chunks as $pageIndex => $chunk)
+                    <span class="pwa-more-dot {{ $pageIndex === 0 ? 'active' : '' }}" data-slide="{{ $pageIndex }}"></span>
+                @endforeach
+            </div>
+        @endif
     </div>
  
     <!-- Global Search Modal (Command Palette Style) -->
@@ -664,6 +694,38 @@
                 moreBtn && moreBtn.addEventListener('click', openMoreMenu);
                 moreOverlay && moreOverlay.addEventListener('click', closeMoreMenu);
                 moreClose && moreClose.addEventListener('click', closeMoreMenu);
+
+                // Sync PWA More Menu Slider dots on scroll and dot clicks
+                const pwaCarousel = document.getElementById('pwaMoreCarousel');
+                const pwaDots = document.querySelectorAll('.pwa-more-dot');
+                if (pwaCarousel && pwaDots.length) {
+                    // Scroll Listener to update active dot
+                    pwaCarousel.addEventListener('scroll', function() {
+                        const width = pwaCarousel.offsetWidth;
+                        if (width > 0) {
+                            const page = Math.round(pwaCarousel.scrollLeft / width);
+                            pwaDots.forEach((dot, idx) => {
+                                if (idx === page) {
+                                    dot.classList.add('active');
+                                } else {
+                                    dot.classList.remove('active');
+                                }
+                            });
+                        }
+                    });
+
+                    // Dot Clicks to scroll to slides
+                    pwaDots.forEach(dot => {
+                        dot.addEventListener('click', function() {
+                            const slideIndex = parseInt(this.getAttribute('data-slide'));
+                            const width = pwaCarousel.offsetWidth;
+                            pwaCarousel.scrollTo({
+                                left: slideIndex * width,
+                                behavior: 'smooth'
+                             });
+                         });
+                     });
+                 }
 
                 // Prevent touch dragging on PWA overlays & menu container from causing rubber-band scroll
                 if (moreOverlay) {

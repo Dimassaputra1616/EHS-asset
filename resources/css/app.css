@@ -1881,11 +1881,58 @@ div.dataTables_wrapper div.dataTables_info {
     font-size: 1rem;
 }
 
+/* --- Swipeable Carousel for PWA More Options Menu --- */
+.pwa-more-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+.pwa-more-carousel::-webkit-scrollbar {
+    display: none;
+}
+.pwa-more-carousel {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.pwa-more-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+}
+
 .pwa-more-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
-    padding: 0.5rem 1rem 1.25rem;
+    padding: 0.5rem 1rem 0.5rem; /* Reduced padding bottom to sit nicely above dots */
+}
+
+/* Page Indicator Dots */
+.pwa-more-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    padding-bottom: 1.25rem;
+    margin-top: 0.25rem;
+}
+.pwa-more-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #d1d5db;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+.pwa-more-dot.active {
+    width: 14px;
+    border-radius: 3px;
+    background: var(--hse-red);
 }
 
 .pwa-more-item {
