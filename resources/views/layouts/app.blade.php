@@ -941,6 +941,31 @@
                         }
                     });
                 }
+
+                // Auto-dismiss and manual exit transitions for Toast Alerts
+                const toasts = document.querySelectorAll('.toast-container .alert-modern');
+                toasts.forEach(function(toast) {
+                    function dismissToast() {
+                        toast.classList.add('dismissing');
+                        // Wait for slide-out animation (300ms) then remove from DOM
+                        setTimeout(function() {
+                            toast.remove();
+                        }, 350);
+                    }
+
+                    // 1. Auto-dismiss after 3.5 seconds
+                    const autoHideTimer = setTimeout(dismissToast, 3500);
+
+                    // 2. Manual click close button handler
+                    const closeBtn = toast.querySelector('.btn-close');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            clearTimeout(autoHideTimer); // Cancel auto-dismiss if clicked manually
+                            dismissToast();
+                        });
+                    }
+                });
             });
         </script>
     </body>

@@ -1181,18 +1181,23 @@ div.dataTables_wrapper div.dataTables_info {
    ============================ */
 .alert-modern {
     border: none;
-    border-radius: 12px;
-    padding: 0.85rem 1.15rem;
+    border-radius: 18px; /* Extra rounded corners for premium look */
+    padding: 0.9rem 1.25rem;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+    gap: 0.85rem;
+    box-shadow: 
+        0 15px 35px -5px rgba(0, 0, 0, 0.08), 
+        0 5px 15px -3px rgba(0, 0, 0, 0.03),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.6) !important;
     font-size: 0.875rem;
     font-weight: 600;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
     max-width: 380px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes toastSlideIn {
     from {
@@ -1205,34 +1210,101 @@ div.dataTables_wrapper div.dataTables_info {
     }
 }
 .alert-modern.alert-success {
-    background: rgba(240, 253, 244, 0.95);
-    color: #166534;
-    border: 1px solid rgba(74, 222, 128, 0.3);
-    border-left: 4px solid #22c55e;
+    background: rgba(255, 255, 255, 0.88) !important;
+    color: #0f172a !important; /* Dark text for premium look */
+    border: 1.5px solid rgba(74, 222, 128, 0.25) !important;
+    border-left: 5px solid #22c55e !important;
+    box-shadow: 
+        0 15px 35px -5px rgba(0, 0, 0, 0.06), 
+        0 0 25px rgba(34, 197, 94, 0.06),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.8) !important;
 }
 .alert-modern.alert-danger {
-    background: rgba(254, 242, 242, 0.95);
-    color: #991b1b;
-    border: 1px solid rgba(248, 113, 113, 0.3);
-    border-left: 4px solid #ef4444;
+    background: rgba(255, 255, 255, 0.88) !important;
+    color: #0f172a !important;
+    border: 1.5px solid rgba(248, 113, 113, 0.25) !important;
+    border-left: 5px solid #ef4444 !important;
+    box-shadow: 
+        0 15px 35px -5px rgba(0, 0, 0, 0.06), 
+        0 0 25px rgba(239, 68, 68, 0.06),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.8) !important;
 }
 .alert-modern .alert-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 0.95rem;
     flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 .alert-success .alert-icon {
-    background: rgba(34, 197, 94, 0.12);
-    color: #22c55e;
+    background: rgba(34, 197, 94, 0.15) !important;
+    color: #22c55e !important;
 }
 .alert-danger .alert-icon {
-    background: rgba(239, 68, 68, 0.12);
-    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #ef4444 !important;
+}
+
+/* Animated bottom progress bar showing time until auto-dismiss */
+.alert-modern::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    transform-origin: left;
+    animation: toastProgress 3.5s linear forwards;
+}
+
+.alert-modern.alert-success::after {
+    background: linear-gradient(90deg, rgba(34, 197, 94, 0.2), #22c55e);
+}
+
+.alert-modern.alert-danger::after {
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.2), #ef4444);
+}
+
+@keyframes toastProgress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+/* Exit Animations */
+.toast-container .alert-modern.dismissing {
+    animation: toastSlideOut 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@media (min-width: 768px) {
+    .toast-container .alert-modern.dismissing {
+        animation: toastFadeOutRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+}
+
+@keyframes toastSlideOut {
+    from {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-40px) scale(0.92);
+        opacity: 0;
+    }
+}
+
+@keyframes toastFadeOutRight {
+    from {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(40px) scale(0.95);
+        opacity: 0;
+    }
 }
 .alert-modern .btn-close {
     font-size: 0.75rem;
