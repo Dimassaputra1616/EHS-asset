@@ -238,32 +238,129 @@ class AssetController extends Controller
 
     public function getNotifications()
     {
-        $threshold = (int) config('app.low_stock_threshold', 10);
-        $lowStockConsumables = \App\Models\Consumable::where('stock', '<=', $threshold)->get();
+        $user = auth()->user();
         $notifications = [];
 
-        foreach ($lowStockConsumables as $item) {
-            $notifications[] = [
-                'id' => 'consumable-' . $item->id,
-                'title' => 'Low Stock Warning',
-                'message' => "Item '{$item->name}' is low: {$item->stock} {$item->unit} remaining (Min: {$threshold} {$item->unit})",
-                'type' => 'warning',
-                'url' => route('consumables.index') . '?low_stock=1',
-                'time' => 'Action required'
-            ];
-        }
+        if ($user && ($user->can('requests.manage') || $user->can('damage_reports.manage') || $user->can('config.manage') || $user->hasRole('admin'))) {
+            // --- ADMIN & STAFF NOTIFICATIONS ---
 
-        // Also add general alerts for critical assets that are "Broken"
-        $brokenAssets = \App\Models\Asset::where('condition', 'Broken')->get();
-        foreach ($brokenAssets as $asset) {
-            $notifications[] = [
-                'id' => 'asset-' . $asset->id,
-                'title' => 'Asset Damage Report',
-                'message' => "Asset '{$asset->name}' ({$asset->code}) is reported Broken.",
-                'type' => 'danger',
-                'url' => route('assets.index') . "?search=" . urlencode($asset->code),
-                'time' => 'Review required'
-            ];
+            // 1. Pending Requests (Permintaan Pinjam Baru)
+            $pendingRequests = \App\Models\AssetRequest::with(['user', 'asset', 'consumable'])
+                ->where('status', 'pending')
+                ->orderBy('created_at', 'desc')
+                ->get();
+            
+            foreach ($pendingRequests as $req) {
+                $itemName = $req->asset ? $req->asset->name : ($req->consumable ? $req->consumable->name : 'Unknown Item');
+                $notifications[] = [
+                    'id' => 'request-' . $req->id,
+                    'title' => 'Permintaan Pinjam Baru',
+                    'message' => "{$req->user->name} mengajukan pinjam {$itemName} (Qty: {$req->qty})",
+                    'type' => 'warning',
+                    'url' => route('admin.requests.index'),
+                    'time' => $req->created_at->diffForHumans()
+                ];
+            }
+
+            // 2. Pending Damage Reports (Laporan Kerusakan Baru)
+            $pendingDamage = \App\Models\DamageReport::with(['user', 'asset', 'consumable'])
+                ->where('status', 'pending')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            foreach ($pendingDamage as $dmg) {
+                $itemName = $dmg->asset ? $dmg->asset->name : ($dmg->consumable ? $dmg->consumable->name : $dmg->item_name);
+                $notifications[] = [
+                    'id' => 'damage-' . $dmg->id,
+                    'title' => 'Laporan Kerusakan Baru',
+                    'message' => "{$dmg->user->name} melaporkan kerusakan: {$itemName}",
+                    'type' => 'danger',
+                    'url' => route('admin.damage_reports.index'),
+                    'time' => $dmg->created_at->diffForHumans()
+                ];
+            }
+
+            // 3. Low Stock Consumables
+            $threshold = (int) config('app.low_stock_threshold', 10);
+            $lowStockConsumables = \App\Models\Consumable::where('stock', '<=', $threshold)->get();
+            foreach ($lowStockConsumables as $item) {
+                $notifications[] = [
+                    'id' => 'consumable-' . $item->id,
+                    'title' => 'Stok Menipis (Warning)',
+                    'message' => "Stok {$item->name} sisa {$item->stock} {$item->unit} (Batas Min: {$threshold})",
+                    'type' => 'warning',
+                    'url' => route('consumables.index') . '?low_stock=1',
+                    'time' => 'Tindakan diperlukan'
+                ];
+            }
+
+            // 4. Critical Assets that are "Broken"
+            $brokenAssets = \App\Models\Asset::where('condition', 'Broken')->get();
+            foreach ($brokenAssets as $asset) {
+                $notifications[] = [
+                    'id' => 'asset-' . $asset->id,
+                    'title' => 'Aset Rusak',
+                    'message' => "Aset '{$asset->name}' ({$asset->code}) dilaporkan rusak.",
+                    'type' => 'danger',
+                    'url' => route('assets.index') . "?search=" . urlencode($asset->code),
+                    'time' => 'Perlu ditinjau'
+                ];
+            }
+        } else if ($user) {
+            // --- EMPLOYEE / KARYAWAN (STAFF PORTAL) NOTIFICATIONS ---
+
+            // 1. Approved / Rejected / Returned Request Updates
+            $userRequests = \App\Models\AssetRequest::with(['asset', 'consumable'])
+                ->where('user_id', $user->id)
+                ->whereIn('status', ['approved', 'rejected', 'returned'])
+                ->orderBy('updated_at', 'desc')
+                ->take(5)
+                ->get();
+            
+            foreach ($userRequests as $req) {
+                $itemName = $req->asset ? $req->asset->name : ($req->consumable ? $req->consumable->name : 'Item');
+                $statusMap = [
+                    'approved' => ['Disetujui', 'success', 'telah disetujui oleh admin.'],
+                    'rejected' => ['Ditolak', 'danger', 'ditolak.'],
+                    'returned' => ['Dikembalikan', 'info', 'telah dikembalikan dan dikonfirmasi.'],
+                ];
+                $statusInfo = $statusMap[$req->status] ?? ['Selesai', 'info', 'diperbarui.'];
+                
+                $notifications[] = [
+                    'id' => 'user-request-' . $req->id . '-' . $req->status,
+                    'title' => 'Peminjaman ' . $statusInfo[0],
+                    'message' => "Permintaan pinjam {$itemName} Anda {$statusInfo[2]}",
+                    'type' => $statusInfo[1],
+                    'url' => route('staff.requests.index'),
+                    'time' => $req->updated_at->diffForHumans()
+                ];
+            }
+
+            // 2. Resolved / Closed Damage Reports
+            $userDamage = \App\Models\DamageReport::with(['asset', 'consumable'])
+                ->where('user_id', $user->id)
+                ->whereIn('status', ['resolved', 'closed'])
+                ->orderBy('updated_at', 'desc')
+                ->take(5)
+                ->get();
+
+            foreach ($userDamage as $dmg) {
+                $itemName = $dmg->asset ? $dmg->asset->name : ($dmg->consumable ? $dmg->consumable->name : $dmg->item_name);
+                $statusMap = [
+                    'resolved' => ['Selesai Diperbaiki', 'success', 'telah selesai diperbaiki.'],
+                    'closed' => ['Laporan Ditutup', 'secondary', 'telah ditutup.'],
+                ];
+                $statusInfo = $statusMap[$dmg->status] ?? ['Diperbarui', 'info', 'diperbarui.'];
+
+                $notifications[] = [
+                    'id' => 'user-damage-' . $dmg->id . '-' . $dmg->status,
+                    'title' => $statusInfo[0],
+                    'message' => "Laporan kerusakan {$itemName} Anda {$statusInfo[2]}",
+                    'type' => $statusInfo[1],
+                    'url' => route('staff.damage_reports.index'),
+                    'time' => $dmg->updated_at->diffForHumans()
+                ];
+            }
         }
 
         return response()->json([

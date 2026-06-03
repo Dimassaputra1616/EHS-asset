@@ -1,5 +1,9 @@
 @php
     $theme = config('app.sidebar_theme', 'Dark');
+    
+    // Fetch pending request and damage report counts
+    $pendingRequestsCount = \App\Models\AssetRequest::where('status', 'pending')->count();
+    $pendingDamageCount = \App\Models\DamageReport::where('status', 'pending')->count();
 @endphp
 
 <style>
@@ -417,6 +421,32 @@
         color: #ffffff !important;
         text-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
     }
+    
+    /* Sidebar badge styles and pulse animations */
+    .sidebar-badge {
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        padding: 0.28em 0.65em !important;
+        border-radius: 50rem !important;
+        background-color: #ef4444 !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 5px rgba(239, 68, 68, 0.25) !important;
+        transition: all 0.2s ease !important;
+    }
+    .sidebar-badge-pulse {
+        animation: sidebar-badge-pulse-animation 2s infinite !important;
+    }
+    @keyframes sidebar-badge-pulse-animation {
+        0% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5) !important;
+        }
+        70% {
+            box-shadow: 0 0 0 5px rgba(239, 68, 68, 0) !important;
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0) !important;
+        }
+    }
 </style>
 
 <div id="sidebar-wrapper" class="sidebar-theme-{{ $theme }}">
@@ -498,14 +528,24 @@
             <div class="sidebar-section-header">EHS Management</div>
             
             @can('requests.manage')
-            <a class="list-group-item {{ request()->routeIs('admin.requests.*') ? 'active' : '' }}" href="{{ route('admin.requests.index') }}">
-                <i class="bi bi-card-checklist" style="color: #fda4af;"></i> <span>Manage Requests</span>
+            <a class="list-group-item d-flex justify-content-between align-items-center {{ request()->routeIs('admin.requests.*') ? 'active' : '' }}" href="{{ route('admin.requests.index') }}">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-card-checklist" style="color: #fda4af;"></i> <span>Manage Requests</span>
+                </div>
+                @if($pendingRequestsCount > 0)
+                    <span class="badge sidebar-badge sidebar-badge-pulse">{{ $pendingRequestsCount }}</span>
+                @endif
             </a>
             @endcan
             
             @can('damage_reports.manage')
-            <a class="list-group-item {{ request()->routeIs('admin.damage_reports.*') ? 'active' : '' }}" href="{{ route('admin.damage_reports.index') }}">
-                <i class="bi bi-shield-exclamation" style="color: #fb7185;"></i> <span>Manage Damage Reports</span>
+            <a class="list-group-item d-flex justify-content-between align-items-center {{ request()->routeIs('admin.damage_reports.*') ? 'active' : '' }}" href="{{ route('admin.damage_reports.index') }}">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-shield-exclamation" style="color: #fb7185;"></i> <span>Manage Damage Reports</span>
+                </div>
+                @if($pendingDamageCount > 0)
+                    <span class="badge sidebar-badge sidebar-badge-pulse">{{ $pendingDamageCount }}</span>
+                @endif
             </a>
             @endcan
         @endif
