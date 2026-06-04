@@ -136,12 +136,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::middleware('permission:requests.manage')->group(function () {
             Route::get('/requests', [\App\Http\Controllers\Admin\ManageRequestController::class, 'index'])->name('requests.index');
             Route::put('/requests/{id}/status', [\App\Http\Controllers\Admin\ManageRequestController::class, 'updateStatus'])->name('requests.update-status');
+            Route::delete('/requests/{id}', [\App\Http\Controllers\Admin\ManageRequestController::class, 'destroy'])->name('requests.destroy');
         });
 
         // Manage Damage Reports
         Route::middleware('permission:damage_reports.manage')->group(function () {
             Route::get('/damage-reports', [\App\Http\Controllers\Admin\ManageDamageReportController::class, 'index'])->name('damage_reports.index');
             Route::put('/damage-reports/{id}/status', [\App\Http\Controllers\Admin\ManageDamageReportController::class, 'updateStatus'])->name('damage_reports.update-status');
+            Route::delete('/damage-reports/{id}', [\App\Http\Controllers\Admin\ManageDamageReportController::class, 'destroy'])->name('damage_reports.destroy');
         });
     });
 });

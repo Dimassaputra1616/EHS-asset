@@ -60,10 +60,16 @@
                             </td>
                             <td id="status-badge-{{ $req->id }}">{!! $req->status_badge !!}</td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-outline-dark fw-bold px-3 py-1.5 rounded-3 d-inline-flex align-items-center gap-1" 
-                                        onclick="openUpdateModal({{ $req->id }}, '{{ $req->status }}', '{{ addslashes($req->admin_notes) }}')">
-                                    <i class="bi bi-pencil-square"></i> Proses
-                                </button>
+                                <div class="d-flex gap-1">
+                                    <button type="button" class="btn btn-sm btn-outline-dark fw-bold px-3 py-1.5 rounded-3 d-inline-flex align-items-center gap-1" 
+                                            onclick="openUpdateModal({{ $req->id }}, '{{ $req->status }}', '{{ addslashes($req->admin_notes) }}')">
+                                        <i class="bi bi-pencil-square"></i> Proses
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger fw-bold px-3 py-1.5 rounded-3 d-inline-flex align-items-center gap-1" 
+                                            onclick="confirmDelete({{ $req->id }})">
+                                        <i class="bi bi-trash"></i> Hapus
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -182,6 +188,55 @@
                     icon: 'error',
                     confirmButtonColor: '#dc3545',
                     customClass: { popup: 'rounded-4' }
+                });
+            }
+        });
+    }
+
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: 'Pengajuan ini akan dihapus secara permanen!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            customClass: { popup: 'rounded-4' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/admin/requests/" + id,
+                    type: "DELETE",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: response.message,
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false,
+                                customClass: { popup: 'rounded-4' }
+                            });
+                            
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Gagal menghapus pengajuan.',
+                            icon: 'error',
+                            confirmButtonColor: '#dc3545',
+                            customClass: { popup: 'rounded-4' }
+                        });
+                    }
                 });
             }
         });

@@ -41,4 +41,18 @@ class ManageDamageReportController extends Controller
             'message' => 'Status laporan kerusakan berhasil diperbarui!'
         ]);
     }
+
+    public function destroy($id)
+    {
+        $report = DamageReport::findOrFail($id);
+        
+        ActivityLogger::log('Delete Damage Report', "Admin deleted damage report #{$id} ({$report->item_name}) submitted by {$report->user->name}.");
+        
+        $report->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Laporan kerusakan berhasil dihapus!'
+        ]);
+    }
 }

@@ -57,4 +57,19 @@ class ManageRequestController extends Controller
             'message' => 'Status pengajuan berhasil diperbarui!'
         ]);
     }
+
+    public function destroy($id)
+    {
+        $assetRequest = AssetRequest::findOrFail($id);
+        
+        $itemName = $assetRequest->request_type === 'fixed_asset' ? ($assetRequest->asset ? $assetRequest->asset->name : 'Unknown') : ($assetRequest->consumable ? $assetRequest->consumable->name : 'Unknown');
+        ActivityLogger::log('Delete Request', "Admin deleted request #{$id} ({$itemName}) submitted by {$assetRequest->user->name}.");
+        
+        $assetRequest->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengajuan berhasil dihapus!'
+        ]);
+    }
 }
