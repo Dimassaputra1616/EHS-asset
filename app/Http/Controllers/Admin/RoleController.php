@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
+use App\Helpers\ActivityLogger;
 
 class RoleController extends Controller
 {
@@ -49,6 +50,8 @@ class RoleController extends Controller
         $role = Role::create(['name' => $request->name]);
         $role->syncPermissions($request->permission);
 
+        ActivityLogger::log('Create Role', "Admin created role '{$role->name}' with permissions: " . implode(', ', $request->permission));
+
         return redirect()->route('admin.roles.index')->with('success', 'Role created successfully');
     }
 
@@ -66,8 +69,11 @@ class RoleController extends Controller
             'permission' => 'required',
         ]);
 
+        $oldName = $role->name;
         $role->update(['name' => $request->name]);
         $role->syncPermissions($request->permission);
+
+        ActivityLogger::log('Update Role', "Admin updated role '{$oldName}' (now: '{$role->name}') with permissions: " . implode(', ', $request->permission));
 
         return redirect()->route('admin.roles.index')->with('success', 'Role updated successfully');
     }
@@ -77,7 +83,12 @@ class RoleController extends Controller
         if ($role->name == 'admin') {
             return redirect()->route('admin.roles.index')->with('error', 'Cannot delete admin role');
         }
+        
+        $roleName = $role->name;
         $role->delete();
+
+        ActivityLogger::log('Delete Role', "Admin deleted role '{$roleName}'.");
+
         return redirect()->route('admin.roles.index')->with('success', 'Role deleted successfully');
     }
 }
