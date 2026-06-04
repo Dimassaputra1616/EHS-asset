@@ -33,6 +33,20 @@
                 --hse-red-gradient: linear-gradient(135deg, var(--hse-red) 0%, var(--hse-red-light) 100%) !important;
                 --hse-red-glow: 0 10px 25px color-mix(in srgb, var(--hse-red) 25%, transparent) !important;
             }
+            .unseen-notification {
+                background-color: rgba(192, 57, 43, 0.03) !important;
+                position: relative;
+            }
+            .unseen-notification::after {
+                content: '';
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 8px;
+                height: 8px;
+                background-color: var(--hse-red);
+                border-radius: 50%;
+            }
             @yield('styles')
         </style>
         @stack('css')
@@ -823,18 +837,41 @@
                             const badge = document.getElementById('notificationCountBadge');
                             const list = document.getElementById('notificationList');
                             
-                            if (data.count > 0) {
+                            // Save current notifications in window
+                            window.currentNotifications = data.notifications || [];
+                            
+                            // Get seen notifications from localStorage
+                            let seenIds = [];
+                            try {
+                                seenIds = JSON.parse(localStorage.getItem('seen_notifications')) || [];
+                            } catch (e) {
+                                seenIds = [];
+                            }
+                            
+                            // Count unseen notifications
+                            const unseenNotifications = window.currentNotifications.filter(n => !seenIds.includes(n.id));
+                            
+                            if (unseenNotifications.length > 0) {
                                 dot.style.display = 'block';
-                                badge.innerText = data.count + ' alerts';
-                                badge.className = 'badge bg-danger rounded-pill';
-                                
+                                badge.innerText = unseenNotifications.length + ' new';
+                                badge.className = 'badge bg-danger rounded-pill px-2.5 py-1.5';
+                            } else {
+                                dot.style.display = 'none';
+                                badge.innerText = '0 new';
+                                badge.className = 'badge bg-success rounded-pill px-2.5 py-1.5';
+                            }
+                            
+                            if (data.count > 0) {
                                 let html = '';
                                 data.notifications.forEach(item => {
                                     let iconColor = item.type === 'warning' ? 'text-warning bg-warning bg-opacity-10' : 'text-danger bg-danger bg-opacity-10';
                                     let icon = item.type === 'warning' ? 'bi-exclamation-triangle' : 'bi-exclamation-octagon';
                                     
+                                    const isUnseen = !seenIds.includes(item.id);
+                                    const itemClass = isUnseen ? 'notification-item unseen-notification' : 'notification-item';
+                                    
                                     html += `
-                                        <a href="${item.url}" class="notification-item">
+                                        <a href="${item.url}" class="${itemClass}" data-id="${item.id}">
                                             <div class="notification-item-icon ${iconColor}">
                                                 <i class="bi ${icon}"></i>
                                             </div>
@@ -847,10 +884,26 @@
                                     `;
                                 });
                                 list.innerHTML = html;
+                                
+                                // Add click event listener to notification items
+                                list.querySelectorAll('.notification-item').forEach(item => {
+                                    item.addEventListener('click', function(e) {
+                                        const id = this.getAttribute('data-id');
+                                        if (id) {
+                                            let currentSeen = [];
+                                            try {
+                                                currentSeen = JSON.parse(localStorage.getItem('seen_notifications')) || [];
+                                            } catch (e) {
+                                                currentSeen = [];
+                                            }
+                                            if (!currentSeen.includes(id)) {
+                                                currentSeen.push(id);
+                                                localStorage.setItem('seen_notifications', JSON.stringify(currentSeen));
+                                            }
+                                        }
+                                    });
+                                });
                             } else {
-                                dot.style.display = 'none';
-                                badge.innerText = '0 alerts';
-                                badge.className = 'badge bg-success rounded-pill';
                                 list.innerHTML = `
                                     <div class="p-4 text-center text-muted">
                                         <i class="bi bi-check-circle text-success fs-4 d-block mb-2"></i>
@@ -865,6 +918,55 @@
                 loadNotifications();
                 // Refresh notifications every 60 seconds
                 setInterval(loadNotifications, 60000);
+
+                // Clear/mark notifications as read when the dropdown is opened
+                document.addEventListener('DOMContentLoaded', function() {
+                    const notificationBell = document.getElementById('notificationBell');
+                    if (notificationBell) {
+                        const parentDropdown = notificationBell.closest('.dropdown');
+                        if (parentDropdown) {
+                            parentDropdown.addEventListener('show.bs.dropdown', function() {
+                                // Hide the dot immediately
+                                const dot = document.getElementById('notificationDot');
+                                if (dot) dot.style.display = 'none';
+                                
+                                // Update badge immediately
+                                const badge = document.getElementById('notificationCountBadge');
+                                if (badge) {
+                                    badge.innerText = '0 new';
+                                    badge.className = 'badge bg-success rounded-pill px-2.5 py-1.5';
+                                }
+                                
+                                // Add all current notification IDs to seen list
+                                let seenIds = [];
+                                try {
+                                    seenIds = JSON.parse(localStorage.getItem('seen_notifications')) || [];
+                                } catch (e) {
+                                    seenIds = [];
+                                }
+                                
+                                let updated = false;
+                                if (window.currentNotifications) {
+                                    window.currentNotifications.forEach(n => {
+                                        if (!seenIds.includes(n.id)) {
+                                            seenIds.push(n.id);
+                                            updated = true;
+                                        }
+                                    });
+                                }
+                                
+                                if (updated) {
+                                    localStorage.setItem('seen_notifications', JSON.stringify(seenIds));
+                                    
+                                    // Remove CSS classes/styling from current list items immediately
+                                    document.querySelectorAll('.unseen-notification').forEach(item => {
+                                        item.classList.remove('unseen-notification');
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
 
                 // --- Instant Search Input Logic ---
                 const searchInput = document.getElementById('globalSearchInput');
