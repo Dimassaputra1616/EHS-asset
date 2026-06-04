@@ -551,7 +551,7 @@
         @endif
 
         {{-- Administration --}}
-        @if(auth()->user()->can('config.manage') || auth()->user()->can('users.manage') || auth()->user()->can('roles.manage') || auth()->user()->hasRole('admin'))
+        @if(auth()->user()->can('config.manage') || auth()->user()->can('users.manage') || auth()->user()->can('roles.manage') || auth()->user()->can('logs.view'))
             <div class="sidebar-section-header">Administration</div>
             
             @can('config.manage')
@@ -572,11 +572,11 @@
             </a>
             @endcan
             
-            @role('admin')
+            @can('logs.view')
             <a class="list-group-item {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}" href="{{ route('admin.logs.index') }}">
                 <i class="bi bi-clock-history" style="color: #94a3b8;"></i> <span>Activity Logs</span>
             </a>
-            @endrole
+            @endcan
         @endif
 
         {{-- EHS Request Portals --}}

@@ -26,6 +26,7 @@ class RolePermissionSeeder extends Seeder
             'config.manage',
             'users.manage',
             'roles.manage',
+            'logs.view',
             'assets.view', 'assets.create', 'assets.edit', 'assets.delete',
             'consumables.view', 'consumables.create', 'consumables.edit', 'consumables.delete',
             'master.manage', // categories, locations, suppliers

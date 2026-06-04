@@ -126,7 +126,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // Activity Logs
-        Route::middleware('role:admin')->group(function () {
+        Route::middleware('permission:logs.view')->group(function () {
             Route::get('/logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('logs.index');
             Route::delete('/logs/clear', [\App\Http\Controllers\Admin\ActivityLogController::class, 'clearAll'])->name('logs.clear');
             Route::delete('/logs/{id}', [\App\Http\Controllers\Admin\ActivityLogController::class, 'destroy'])->name('logs.destroy');

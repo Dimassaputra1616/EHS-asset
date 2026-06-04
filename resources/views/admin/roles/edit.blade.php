@@ -52,6 +52,7 @@
         'users.manage' => ['Kelola Pengguna', 'Menambah, mengedit, dan menghapus akun pengguna (staf/admin)', 'bi-people-fill'],
         'roles.manage' => ['Kelola Peran & Hak Akses', 'Mengatur peran (Roles) dan hak akses (Permissions) sistem', 'bi-shield-lock-fill'],
         'config.manage' => ['Kelola Konfigurasi', 'Mengubah logo, warna tema, background login, dan versi aplikasi', 'bi-sliders'],
+        'logs.view' => ['Lihat Log Aktivitas', 'Melihat riwayat aktivitas dan log sistem dari admin/staff', 'bi-clock-history'],
     ];
 
     // Define grouping structure
@@ -60,7 +61,7 @@
         'Bahan Habis Pakai (Consumables)' => ['consumables.view', 'consumables.create', 'consumables.edit', 'consumables.delete'],
         'Alur Permintaan Pinjam' => ['requests.view', 'requests.create', 'requests.manage'],
         'Laporan Kerusakan Aset' => ['damage_reports.view', 'damage_reports.create', 'damage_reports.manage'],
-        'Pengaturan Sistem & Admin' => ['master.manage', 'users.manage', 'roles.manage', 'config.manage']
+        'Pengaturan Sistem & Admin' => ['master.manage', 'users.manage', 'roles.manage', 'config.manage', 'logs.view']
     ];
 @endphp
 
