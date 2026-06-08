@@ -73,7 +73,7 @@
                             @error('supplier_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label fw-bold">Condition <span class="text-danger">*</span></label>
                             <select name="condition" class="form-select form-select-lg fs-6 @error('condition') is-invalid @enderror" required>
                                 <option value="Good" {{ old('condition') == 'Good' ? 'selected' : '' }}>Good</option>
@@ -83,7 +83,7 @@
                             @error('condition') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label fw-bold">Status <span class="text-danger">*</span></label>
                             <select name="status" class="form-select form-select-lg fs-6 @error('status') is-invalid @enderror" required>
                                 <option value="In Stock" {{ old('status') == 'In Stock' ? 'selected' : '' }}>In Stock</option>
@@ -92,6 +92,12 @@
                                 <option value="Retired" {{ old('status') == 'Retired' ? 'selected' : '' }}>Retired</option>
                             </select>
                             @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">Quantity <span class="text-danger">*</span></label>
+                            <input type="number" name="qty" class="form-control form-control-lg fs-6 @error('qty') is-invalid @enderror" value="{{ old('qty', 1) }}" min="1" required>
+                            @error('qty') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-3">

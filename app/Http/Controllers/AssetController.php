@@ -54,6 +54,7 @@ class AssetController extends Controller
             'supplier_id' => 'required|exists:suppliers,id',
             'condition' => 'required|string',
             'status' => 'required|string',
+            'qty' => 'required|integer|min:1',
             'purchase_date' => 'nullable|date',
             'purchase_cost' => 'required|numeric|min:0',
             'description' => 'nullable|string',
@@ -62,7 +63,7 @@ class AssetController extends Controller
 
         $asset = Asset::create($request->all());
 
-        \App\Helpers\ActivityLogger::log('Create Asset', "Asset {$asset->name} ({$asset->code}) was created.");
+        \App\Helpers\ActivityLogger::log('Create Asset', "Asset {$asset->name} ({$asset->code}) with quantity {$asset->qty} was created.");
 
         return redirect()->route('assets.index')->with('success', 'Asset created successfully.');
     }
@@ -105,6 +106,7 @@ class AssetController extends Controller
             'supplier_id' => 'required|exists:suppliers,id',
             'condition' => 'required|string',
             'status' => 'required|string',
+            'qty' => 'required|integer|min:1',
             'purchase_date' => 'nullable|date',
             'purchase_cost' => 'required|numeric|min:0',
             'description' => 'nullable|string',
@@ -205,6 +207,7 @@ class AssetController extends Controller
                 'Category', 
                 'Location', 
                 'Supplier / Vendor', 
+                'Quantity',
                 'Condition', 
                 'Status', 
                 'Holder / Assigned To',
@@ -221,6 +224,7 @@ class AssetController extends Controller
                     $asset->category ? $asset->category->name : '-',
                     $asset->location ? $asset->location->name : '-',
                     $asset->supplier ? $asset->supplier->name : '-',
+                    $asset->qty,
                     $asset->condition,
                     $asset->status,
                     $asset->assigned_to ? $asset->assigned_to : '-',

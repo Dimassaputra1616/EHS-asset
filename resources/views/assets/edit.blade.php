@@ -93,7 +93,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label">Condition <span class="text-danger">*</span></label>
                             <select name="condition" class="form-select @error('condition') is-invalid @enderror" required>
                                 <option value="Good" {{ old('condition', $asset->condition) == 'Good' ? 'selected' : '' }}>Good</option>
@@ -103,7 +103,7 @@
                             @error('condition') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label">Status <span class="text-danger">*</span></label>
                             <select name="status" class="form-select @error('status') is-invalid @enderror" required>
                                 <option value="In Stock" {{ old('status', $asset->status) == 'In Stock' ? 'selected' : '' }}>In Stock</option>
@@ -112,6 +112,12 @@
                                 <option value="Retired" {{ old('status', $asset->status) == 'Retired' ? 'selected' : '' }}>Retired</option>
                             </select>
                             @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Quantity <span class="text-danger">*</span></label>
+                            <input type="number" name="qty" class="form-control @error('qty') is-invalid @enderror" value="{{ old('qty', $asset->qty) }}" min="1" required>
+                            @error('qty') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-3">

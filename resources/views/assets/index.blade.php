@@ -134,6 +134,10 @@
                                         <td id="view-location">-</td>
                                     </tr>
                                     <tr>
+                                        <td class="fw-bold text-muted small">Quantity</td>
+                                        <td id="view-qty" class="fw-semibold">-</td>
+                                    </tr>
+                                    <tr>
                                         <td class="fw-bold text-muted small">Assigned To (Holder)</td>
                                         <td id="view-assigned-to" class="fw-semibold text-dark">-</td>
                                     </tr>
@@ -189,6 +193,7 @@
                         <th>Asset Name</th>
                         <th>Category</th>
                         <th>Location</th>
+                        <th>Qty</th>
                         <th>Holder / Pemegang</th>
                         <th>Status</th>
                         <th width="15%">Actions</th>
@@ -236,6 +241,7 @@
                 {data: 'name', name: 'name', render: function(data) { return '<span class="fw-medium">' + data + '</span>'; }},
                 {data: 'category_name', name: 'category_name'},
                 {data: 'location_name', name: 'location_name'},
+                {data: 'qty', name: 'qty', render: function(data) { return '<span class="fw-semibold">' + data + '</span>'; }},
                 {data: 'assigned_to', name: 'assigned_to', render: function(data) {
                     return data ? '<span class="fw-semibold text-dark"><i class="bi bi-person me-1"></i>' + data + '</span>' : '<span class="text-muted fst-italic">No holder</span>';
                 }},
@@ -286,6 +292,7 @@
             $('#view-name').text('Loading...');
             $('#view-category').text('-');
             $('#view-location').text('-');
+            $('#view-qty').text('-');
             $('#view-assigned-to').text('-');
             $('#view-supplier').text('-');
             $('#view-condition').text('-');
@@ -305,6 +312,7 @@
                     $('#view-name').text(asset.name);
                     $('#view-category').text(asset.category ? asset.category.name : '-');
                     $('#view-location').text(asset.location ? asset.location.name : '-');
+                    $('#view-qty').text(asset.qty !== undefined ? asset.qty : '1');
                     $('#view-supplier').text(asset.supplier ? asset.supplier.name : '-');
                     
                     // Condition badge
