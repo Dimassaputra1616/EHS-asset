@@ -35,7 +35,13 @@ class ConsumableTransactionController extends Controller
                     $unit = $row->consumable ? $row->consumable->unit : 'pcs';
                     return '<span class="text-success fw-bold"><i class="bi bi-plus-lg me-1"></i>' . $row->quantity . ' ' . $unit . '</span>';
                 })
-                ->rawColumns(['user_name', 'formatted_quantity'])
+                ->addColumn('action', function ($row) {
+                    if (auth()->user()->can('consumables.delete')) {
+                        return '<button class="btn btn-action btn-delete" data-id="' . $row->id . '" title="Delete"><i class="bi bi-trash"></i></button>';
+                    }
+                    return '-';
+                })
+                ->rawColumns(['user_name', 'formatted_quantity', 'action'])
                 ->make(true);
         }
 
@@ -68,7 +74,13 @@ class ConsumableTransactionController extends Controller
                     $unit = $row->consumable ? $row->consumable->unit : 'pcs';
                     return '<span class="text-danger fw-bold"><i class="bi bi-dash-lg me-1"></i>' . $row->quantity . ' ' . $unit . '</span>';
                 })
-                ->rawColumns(['user_name', 'formatted_quantity'])
+                ->addColumn('action', function ($row) {
+                    if (auth()->user()->can('consumables.delete')) {
+                        return '<button class="btn btn-action btn-delete" data-id="' . $row->id . '" title="Delete"><i class="bi bi-trash"></i></button>';
+                    }
+                    return '-';
+                })
+                ->rawColumns(['user_name', 'formatted_quantity', 'action'])
                 ->make(true);
         }
 
@@ -131,5 +143,38 @@ class ConsumableTransactionController extends Controller
 
         $routeName = $request->type === 'in' ? 'consumables.transactions.in' : 'consumables.transactions.out';
         return redirect()->route($routeName)->with('success', 'Transaksi berhasil disimpan.');
+    }
+
+    /**
+     * Remove the specified transaction and reverse its stock changes.
+     */
+    public function destroy($id)
+    {
+        $transaction = ConsumableTransaction::findOrFail($id);
+        $consumable = Consumable::findOrFail($transaction->consumable_id);
+
+        if ($transaction->type === 'in') {
+            // Reversing "Stock In" means we subtract the stock back
+            // Check if there is enough stock to subtract
+            if ($consumable->stock < $transaction->quantity) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus transaksi. Sisa stok saat ini (' . $consumable->stock . ') tidak mencukupi jika dikurangi sebanyak ' . $transaction->quantity
+                ], 422);
+            }
+            $consumable->decrement('stock', $transaction->quantity);
+            \App\Helpers\ActivityLogger::log('Delete Stock In', "Deleted Stock In Transaction #{$transaction->id}: Deducted {$transaction->quantity} {$consumable->unit} of {$consumable->name}.");
+        } else {
+            // Reversing "Stock Out" means we add the stock back
+            $consumable->increment('stock', $transaction->quantity);
+            \App\Helpers\ActivityLogger::log('Delete Stock Out', "Deleted Stock Out Transaction #{$transaction->id}: Added back {$transaction->quantity} {$consumable->unit} of {$consumable->name}.");
+        }
+
+        $transaction->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Transaksi berhasil dihapus dan stok telah disesuaikan kembali!'
+        ]);
     }
 }

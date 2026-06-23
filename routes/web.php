@@ -71,6 +71,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::middleware('permission:consumables.delete')->group(function () {
         Route::delete('consumables/{consumable}', [ConsumableController::class, 'destroy'])->name('consumables.destroy');
+        Route::delete('consumables/transactions/{id}', [ConsumableTransactionController::class, 'destroy'])->name('consumables.transactions.destroy');
     });
     Route::middleware('permission:consumables.view')->group(function () {
         Route::get('consumables/{consumable}', [ConsumableController::class, 'show'])->name('consumables.show');

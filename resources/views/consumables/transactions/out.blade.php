@@ -29,6 +29,9 @@
                         <th>Jumlah Keluar</th>
                         <th>Operator</th>
                         <th>Catatan</th>
+                        @can('consumables.delete')
+                        <th width="10%">Aksi</th>
+                        @endcan
                     </tr>
                 </thead>
             </table>
@@ -43,6 +46,7 @@
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     $(function () {
@@ -60,7 +64,10 @@
                 {data: 'user_name', name: 'user.name'},
                 {data: 'notes', name: 'notes', render: function(data) {
                     return data ? data : '<span class="text-muted fst-italic">-</span>';
-                }}
+                }},
+                @can('consumables.delete')
+                {data: 'action', name: 'action', orderable: false, searchable: false}
+                @endcan
             ],
             language: {
                 search: "",
@@ -69,6 +76,47 @@
             drawCallback: function() {
                 $('.dataTables_paginate > .pagination').addClass('pagination-sm');
             }
+        });
+
+        // Delete action click handler
+        $(document).on('click', '.btn-delete', function() {
+            let id = $(this).data('id');
+            
+            Swal.fire({
+                title: 'Hapus Transaksi?',
+                text: 'Apakah Anda yakin ingin menghapus transaksi ini? Stok barang akan disesuaikan kembali secara otomatis.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#C0392B',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/consumables/transactions/' + id,
+                        type: 'DELETE',
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire('Berhasil!', response.message, 'success');
+                                $('#transactions-out-table').DataTable().ajax.reload();
+                            } else {
+                                Swal.fire('Gagal!', response.message, 'error');
+                            }
+                        },
+                        error: function(xhr) {
+                            let msg = 'Gagal menghapus transaksi.';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                msg = xhr.responseJSON.message;
+                            }
+                            Swal.fire('Gagal!', msg, 'error');
+                        }
+                    });
+                }
+            });
         });
     });
 </script>
