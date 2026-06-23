@@ -225,8 +225,8 @@
 
                     <!-- Quick Actions Grid -->
                     <div class="row g-3">
-                        <!-- View Details -->
-                        <div class="col-6">
+                        <!-- View Details / Stock In Slot -->
+                        <div class="col-6" id="sac-col-view-actions">
                             <button type="button" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-view" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;">
                                 <div class="p-2 bg-primary bg-opacity-15 rounded-3 mb-3 border border-primary border-opacity-10" style="width: fit-content;">
                                     <i class="bi bi-eye-fill text-primary fs-5 d-block"></i>
@@ -236,6 +236,23 @@
                                     <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;">Rincian spesifikasi, biaya, dan vendor.</small>
                                 </div>
                             </button>
+
+                            @can('consumables.create')
+                            <button type="button" class="btn border-0 text-start w-100 p-3 h-100 d-none flex-column justify-content-between rounded-4 transition-all" id="sac-btn-stockin" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;" data-bs-toggle="collapse" data-bs-target="#sac-stockin-panel">
+                                <div class="p-2 bg-info bg-opacity-15 rounded-3 mb-3 border border-info border-opacity-10" style="width: fit-content;">
+                                    <i class="bi bi-box-arrow-in-down text-info fs-5 d-block"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white small">Stock In</div>
+                                    <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;">Tambah/masukkan stok APD secara cepat.</small>
+                                </div>
+                            </button>
+                            @endcan
+
+                            <div class="p-3 h-100 d-none flex-column justify-content-center align-items-center rounded-4 border border-secondary border-opacity-10 text-center" id="sac-fallback-guard-view" style="background: rgba(255,255,255,0.01);">
+                                <i class="bi bi-shield-lock text-white-50 fs-3 mb-2 opacity-50"></i>
+                                <div class="fw-bold text-white-50 small" style="font-size: 0.75rem;">HSE Guard Portal</div>
+                            </div>
                         </div>
                         
                         <!-- Request Borrow / Claim -->
@@ -324,6 +341,39 @@
                                 </div>
                                 <button type="submit" class="btn btn-danger w-100 fw-bold py-2 btn-sm rounded-3">
                                     Simpan Perubahan
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @endcan
+
+                    <!-- Admin Consumable Stock In Panel -->
+                    @can('consumables.create')
+                    <div class="collapse mt-3" id="sac-stockin-panel">
+                        <div class="p-3 rounded-4 border border-secondary border-opacity-20" style="background: rgba(255,255,255,0.02);">
+                            <h6 class="fw-bold text-white mb-3 small d-flex align-items-center gap-1">
+                                <i class="bi bi-box-arrow-in-down text-info"></i> Quick Stock In Panel
+                            </h6>
+                            <form id="sac-stockin-form" method="POST" action="{{ route('consumables.transactions.store') }}">
+                                @csrf
+                                <input type="hidden" name="type" value="in">
+                                <input type="hidden" name="consumable_id" id="sac-stockin-consumable-id">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Jumlah Masuk</label>
+                                        <input type="number" class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="quantity" id="sac-stockin-quantity" value="1" min="1" required style="font-size: 0.85rem;">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Tanggal</label>
+                                        <input type="date" class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="date" id="sac-stockin-date" value="{{ date('Y-m-d') }}" required style="font-size: 0.85rem;">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Keterangan / Notes</label>
+                                    <textarea class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="notes" id="sac-stockin-notes" rows="2" placeholder="Sumber penambahan..." style="font-size: 0.85rem;"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-info w-100 fw-bold py-2 btn-sm rounded-3 text-white">
+                                    Simpan Transaksi Masuk
                                 </button>
                             </form>
                         </div>
@@ -642,24 +692,56 @@
                                 condBadge.innerHTML = `<span class="badge ${condClass} text-uppercase fw-bold" style="font-size:0.68rem">${item.condition}</span>`;
                             }
 
-                            // Button View logic
+                            // Button View / Stock In logic
                             const viewBtn = document.getElementById('sac-btn-view');
+                            const btnStockIn = document.getElementById('sac-btn-stockin');
+                            const fallbackGuardView = document.getElementById('sac-fallback-guard-view');
+
+                            if (viewBtn) {
+                                viewBtn.classList.add('d-none');
+                                viewBtn.classList.remove('d-flex');
+                            }
+                            if (btnStockIn) {
+                                btnStockIn.classList.add('d-none');
+                                btnStockIn.classList.remove('d-flex');
+                            }
+                            if (fallbackGuardView) {
+                                fallbackGuardView.classList.add('d-none');
+                                fallbackGuardView.classList.remove('d-flex');
+                            }
+
                             if (type === 'fixed_asset') {
-                                viewBtn.style.display = 'flex';
-                                viewBtn.onclick = function() {
-                                    const sacModal = bootstrap.Modal.getInstance(document.getElementById('scanActionCenterModal'));
-                                    if (sacModal) sacModal.hide();
-                                    
-                                    // If we are on assets page, open detail modal directly!
-                                    if (typeof showAssetDetails === 'function') {
-                                        showAssetDetails(item.id);
-                                    } else {
-                                        // Redirect to assets page with direct parameter to open it
-                                        window.location.href = `/assets?view_id=${item.id}`;
-                                    }
-                                };
+                                if (viewBtn) {
+                                    viewBtn.classList.remove('d-none');
+                                    viewBtn.classList.add('d-flex');
+                                    viewBtn.onclick = function() {
+                                        const sacModal = bootstrap.Modal.getInstance(document.getElementById('scanActionCenterModal'));
+                                        if (sacModal) sacModal.hide();
+                                        
+                                        // If we are on assets page, open detail modal directly!
+                                        if (typeof showAssetDetails === 'function') {
+                                            showAssetDetails(item.id);
+                                        } else {
+                                            // Redirect to assets page with direct parameter to open it
+                                            window.location.href = `/assets?view_id=${item.id}`;
+                                        }
+                                    };
+                                }
                             } else {
-                                viewBtn.style.display = 'none';
+                                if (btnStockIn) {
+                                    btnStockIn.classList.remove('d-none');
+                                    btnStockIn.classList.add('d-flex');
+                                    
+                                    // Populate Quick Stock In Form values
+                                    document.getElementById('sac-stockin-consumable-id').value = item.id;
+                                    document.getElementById('sac-stockin-quantity').value = 1;
+                                    document.getElementById('sac-stockin-notes').value = '';
+                                } else {
+                                    if (fallbackGuardView) {
+                                        fallbackGuardView.classList.remove('d-none');
+                                        fallbackGuardView.classList.add('d-flex');
+                                    }
+                                }
                             }
 
                             // Prefilled request link
@@ -686,7 +768,7 @@
                             }
 
                             // Hide any active collapse panels
-                            ['sac-admin-panel', 'sac-stockout-panel'].forEach(id => {
+                            ['sac-admin-panel', 'sac-stockout-panel', 'sac-stockin-panel'].forEach(id => {
                                 const el = document.getElementById(id);
                                 if (el) {
                                     el.classList.remove('show');
