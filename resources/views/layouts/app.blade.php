@@ -225,6 +225,32 @@
 
                     <!-- Quick Actions Grid -->
                     <div class="row g-3">
+                        <!-- Request Borrow / Claim -->
+                        <div class="col-6">
+                            <a href="#" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-request" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;">
+                                <div class="p-2 bg-success bg-opacity-15 rounded-3 mb-3 border border-success border-opacity-10" style="width: fit-content;">
+                                    <i class="bi bi-hand-index-thumb-fill text-success fs-5 d-block"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white small" id="sac-btn-request-title">Ajukan Pinjam</div>
+                                    <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;" id="sac-btn-request-desc">Buat form request pinjam/ambil APD.</small>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Report Damage -->
+                        <div class="col-6">
+                            <a href="#" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-damage" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;">
+                                <div class="p-2 bg-warning bg-opacity-15 rounded-3 mb-3 border border-warning border-opacity-10" style="width: fit-content;">
+                                    <i class="bi bi-exclamation-triangle-fill text-warning fs-5 d-block"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white small">Laporkan Rusak</div>
+                                    <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;">Kirim laporan kendala / temuan alat rusak.</small>
+                                </div>
+                            </a>
+                        </div>
+
                         <!-- View Details / Stock In Slot -->
                         <div class="col-6" id="sac-col-view-actions">
                             <button type="button" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-view" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;">
@@ -253,32 +279,6 @@
                                 <i class="bi bi-shield-lock text-white-50 fs-3 mb-2 opacity-50"></i>
                                 <div class="fw-bold text-white-50 small" style="font-size: 0.75rem;">HSE Guard Portal</div>
                             </div>
-                        </div>
-                        
-                        <!-- Request Borrow / Claim -->
-                        <div class="col-6">
-                            <a href="#" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-request" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;">
-                                <div class="p-2 bg-success bg-opacity-15 rounded-3 mb-3 border border-success border-opacity-10" style="width: fit-content;">
-                                    <i class="bi bi-hand-index-thumb-fill text-success fs-5 d-block"></i>
-                                </div>
-                                <div>
-                                    <div class="fw-bold text-white small" id="sac-btn-request-title">Ajukan Pinjam</div>
-                                    <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;" id="sac-btn-request-desc">Buat form request pinjam/ambil APD.</small>
-                                </div>
-                            </a>
-                        </div>
-
-                        <!-- Report Damage -->
-                        <div class="col-6">
-                            <a href="#" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-damage" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;">
-                                <div class="p-2 bg-warning bg-opacity-15 rounded-3 mb-3 border border-warning border-opacity-10" style="width: fit-content;">
-                                    <i class="bi bi-exclamation-triangle-fill text-warning fs-5 d-block"></i>
-                                </div>
-                                <div>
-                                    <div class="fw-bold text-white small">Laporkan Rusak</div>
-                                    <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;">Kirim laporan kendala / temuan alat rusak.</small>
-                                </div>
-                            </a>
                         </div>
 
                         <!-- Admin Quick Actions Column -->
