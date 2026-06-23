@@ -53,8 +53,8 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-bold">Notes / Description</label>
-                            <textarea name="notes" class="form-control @error('notes') is-invalid @enderror" rows="3" placeholder="Explain reason for transaction (e.g. Monthly replenishment, Taken for HQ Department)...">{{ old('notes') }}</textarea>
+                            <label class="form-label fw-bold">Notes / Description <span class="text-danger">*</span></label>
+                            <textarea name="notes" class="form-control @error('notes') is-invalid @enderror" rows="3" placeholder="Explain reason for transaction (e.g. Monthly replenishment, Taken for HQ Department)..." required>{{ old('notes') }}</textarea>
                             @error('notes') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                     </div>

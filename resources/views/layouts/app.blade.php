@@ -369,8 +369,8 @@
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Keterangan / Notes</label>
-                                    <textarea class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="notes" id="sac-stockin-notes" rows="2" placeholder="Sumber penambahan..." style="font-size: 0.85rem;"></textarea>
+                                    <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Keterangan / Notes <span class="text-danger">*</span></label>
+                                    <textarea class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="notes" id="sac-stockin-notes" rows="2" placeholder="Sumber penambahan..." required style="font-size: 0.85rem;"></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-info w-100 fw-bold py-2 btn-sm rounded-3 text-white">
                                     Simpan Transaksi Masuk
@@ -402,8 +402,8 @@
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Keterangan / Notes</label>
-                                    <textarea class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="notes" id="sac-stockout-notes" rows="2" placeholder="Tujuan pengeluaran..." style="font-size: 0.85rem;"></textarea>
+                                    <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Keterangan / Notes <span class="text-danger">*</span></label>
+                                    <textarea class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="notes" id="sac-stockout-notes" rows="2" placeholder="Tujuan pengeluaran..." required style="font-size: 0.85rem;"></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-danger w-100 fw-bold py-2 btn-sm rounded-3">
                                     Simpan Transaksi Keluar

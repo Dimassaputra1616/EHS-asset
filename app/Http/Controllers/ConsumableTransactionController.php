@@ -111,7 +111,7 @@ class ConsumableTransactionController extends Controller
             'type' => 'required|in:in,out',
             'quantity' => 'required|integer|min:1',
             'date' => 'required|date',
-            'notes' => 'nullable|string',
+            'notes' => 'required|string',
         ]);
 
         $consumable = Consumable::findOrFail($request->consumable_id);
