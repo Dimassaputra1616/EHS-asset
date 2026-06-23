@@ -40,9 +40,9 @@ class ManageRequestController extends Controller
             $asset = Asset::find($assetRequest->asset_id);
             if ($asset) {
                 if ($newStatus === 'approved') {
-                    $asset->update(['assigned_to' => $assetRequest->user_id]);
+                    $asset->update(['assigned_to' => $assetRequest->user->name]);
                 } elseif ($newStatus === 'returned' || ($oldStatus === 'approved' && $newStatus === 'rejected')) {
-                    if ($asset->assigned_to == $assetRequest->user_id) {
+                    if ($asset->assigned_to == $assetRequest->user->name || $asset->assigned_to == $assetRequest->user_id) {
                         $asset->update(['assigned_to' => null]);
                     }
                 }

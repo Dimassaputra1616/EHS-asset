@@ -264,10 +264,10 @@
                             </a>
                         </div>
 
-                        <!-- Admin Only: Quick Status Update -->
-                        @can('assets.edit')
-                        <div class="col-6">
-                            <button type="button" class="btn border-0 text-start w-100 p-3 h-100 d-flex flex-column justify-content-between rounded-4 transition-all" id="sac-btn-quick-update" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;" data-bs-toggle="collapse" data-bs-target="#sac-admin-panel">
+                        <!-- Admin Quick Actions Column -->
+                        <div class="col-6" id="sac-col-admin-actions">
+                            @can('assets.edit')
+                            <button type="button" class="btn border-0 text-start w-100 p-3 h-100 d-none flex-column justify-content-between rounded-4 transition-all" id="sac-btn-quick-update" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;" data-bs-toggle="collapse" data-bs-target="#sac-admin-panel">
                                 <div class="p-2 bg-danger bg-opacity-15 rounded-3 mb-3 border border-danger border-opacity-10" style="width: fit-content;">
                                     <i class="bi bi-sliders text-danger fs-5 d-block"></i>
                                 </div>
@@ -276,15 +276,26 @@
                                     <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;">Edit status/pemegang secara cepat.</small>
                                 </div>
                             </button>
-                        </div>
-                        @else
-                        <div class="col-6">
-                            <div class="p-3 h-100 d-flex flex-column justify-content-center align-items-center rounded-4 border border-secondary border-opacity-10 text-center" style="background: rgba(255,255,255,0.01);">
+                            @endcan
+
+                            @can('consumables.create')
+                            <button type="button" class="btn border-0 text-start w-100 p-3 h-100 d-none flex-column justify-content-between rounded-4 transition-all" id="sac-btn-stockout" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s ease;" data-bs-toggle="collapse" data-bs-target="#sac-stockout-panel">
+                                <div class="p-2 bg-danger bg-opacity-15 rounded-3 mb-3 border border-danger border-opacity-10" style="width: fit-content;">
+                                    <i class="bi bi-box-arrow-up text-danger fs-5 d-block"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white small">Stock Out</div>
+                                    <small class="text-white-50" style="font-size: 0.72rem; line-height: 1.2; display: block; margin-top: 4px;">Kurangi/keluarkan stok APD secara cepat.</small>
+                                </div>
+                            </button>
+                            @endcan
+
+                            <!-- Fallback when scan is open but user has no permission for current scanned type -->
+                            <div class="p-3 h-100 d-flex flex-column justify-content-center align-items-center rounded-4 border border-secondary border-opacity-10 text-center" id="sac-fallback-guard" style="background: rgba(255,255,255,0.01);">
                                 <i class="bi bi-shield-lock text-white-50 fs-3 mb-2 opacity-50"></i>
                                 <div class="fw-bold text-white-50 small" style="font-size: 0.75rem;">HSE Guard Portal</div>
                             </div>
                         </div>
-                        @endcan
                     </div>
  
                     <!-- Admin Quick Update Collapse Panel -->
@@ -313,6 +324,39 @@
                                 </div>
                                 <button type="submit" class="btn btn-danger w-100 fw-bold py-2 btn-sm rounded-3">
                                     Simpan Perubahan
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @endcan
+
+                    <!-- Admin Consumable Stock Out Panel -->
+                    @can('consumables.create')
+                    <div class="collapse mt-3" id="sac-stockout-panel">
+                        <div class="p-3 rounded-4 border border-secondary border-opacity-20" style="background: rgba(255,255,255,0.02);">
+                            <h6 class="fw-bold text-white mb-3 small d-flex align-items-center gap-1">
+                                <i class="bi bi-box-arrow-up text-danger"></i> Quick Stock Out Panel
+                            </h6>
+                            <form id="sac-stockout-form" method="POST" action="{{ route('consumables.transactions.store') }}">
+                                @csrf
+                                <input type="hidden" name="type" value="out">
+                                <input type="hidden" name="consumable_id" id="sac-stockout-consumable-id">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Jumlah Keluar</label>
+                                        <input type="number" class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="quantity" id="sac-stockout-quantity" value="1" min="1" required style="font-size: 0.85rem;">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Tanggal</label>
+                                        <input type="date" class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="date" id="sac-stockout-date" value="{{ date('Y-m-d') }}" required style="font-size: 0.85rem;">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-white-50 fw-semibold" style="font-size: 0.72rem;">Keterangan / Notes</label>
+                                    <textarea class="form-control bg-dark text-white border-secondary border-opacity-20 p-2 rounded-3" name="notes" id="sac-stockout-notes" rows="2" placeholder="Tujuan pengeluaran..." style="font-size: 0.85rem;"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-danger w-100 fw-bold py-2 btn-sm rounded-3">
+                                    Simpan Transaksi Keluar
                                 </button>
                             </form>
                         </div>
@@ -639,6 +683,58 @@
                                 dmgBtn.href = `/staff/damage-reports/create?item_type=fixed_asset&asset_id=${item.id}`;
                             } else {
                                 dmgBtn.href = `/staff/damage-reports/create?item_type=consumable&consumable_id=${item.id}`;
+                            }
+
+                            // Hide any active collapse panels
+                            ['sac-admin-panel', 'sac-stockout-panel'].forEach(id => {
+                                const el = document.getElementById(id);
+                                if (el) {
+                                    el.classList.remove('show');
+                                }
+                            });
+
+                            // Toggle Admin Quick Action Buttons
+                            const btnQuickUpdate = document.getElementById('sac-btn-quick-update');
+                            const btnStockOut = document.getElementById('sac-btn-stockout');
+                            const fallbackGuard = document.getElementById('sac-fallback-guard');
+
+                            if (btnQuickUpdate) {
+                                btnQuickUpdate.classList.add('d-none');
+                                btnQuickUpdate.classList.remove('d-flex');
+                            }
+                            if (btnStockOut) {
+                                btnStockOut.classList.add('d-none');
+                                btnStockOut.classList.remove('d-flex');
+                            }
+                            if (fallbackGuard) {
+                                fallbackGuard.classList.remove('d-none');
+                                fallbackGuard.classList.add('d-flex');
+                            }
+
+                            if (type === 'fixed_asset') {
+                                if (btnQuickUpdate) {
+                                    btnQuickUpdate.classList.remove('d-none');
+                                    btnQuickUpdate.classList.add('d-flex');
+                                    if (fallbackGuard) {
+                                        fallbackGuard.classList.add('d-none');
+                                        fallbackGuard.classList.remove('d-flex');
+                                    }
+                                }
+                            } else {
+                                if (btnStockOut) {
+                                    btnStockOut.classList.remove('d-none');
+                                    btnStockOut.classList.add('d-flex');
+                                    if (fallbackGuard) {
+                                        fallbackGuard.classList.add('d-none');
+                                        fallbackGuard.classList.remove('d-flex');
+                                    }
+                                    
+                                    // Populate Quick Stock Out Form values
+                                    document.getElementById('sac-stockout-consumable-id').value = item.id;
+                                    document.getElementById('sac-stockout-quantity').max = item.stock;
+                                    document.getElementById('sac-stockout-quantity').value = 1;
+                                    document.getElementById('sac-stockout-notes').value = '';
+                                }
                             }
 
                             // Quick Admin update form
